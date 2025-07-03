@@ -1,5 +1,6 @@
 # Canteen-Meal-Management-System
-This project is to maintain a record of students who are willing to do their Lunch and dinner in suitable time. So, that food of canteen whatever created should not get wasted just because of not informing the canteen administration and If students get fail to inform that he/ she will not going to eat lunch or dinner. On the other hand, canteen food got wasted just because of them then that particular students need to pay the fine.
+This project is designed to maintain a record of students who intend to have lunch or dinner at the canteen, allowing them to confirm their participation within a suitable time frame. The goal is to minimize food waste by ensuring the canteen is informed in advance. If a student fails to notify the canteen that they will not be eating, and food is prepared unnecessarily as a result, that student will be required to pay a fine.
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
