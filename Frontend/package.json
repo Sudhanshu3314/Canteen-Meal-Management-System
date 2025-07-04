@@ -1,0 +1,35 @@
+{
+  "name": "canteen-meal-management-system",
+  "version": "1.0.0",
+  "description": "This Canteen Meal management system is aiming for not getting food waste in canteen.",
+  "main": "index.js",
+  "scripts": {
+    "test": "\"jest\"",
+    "start": "parcel public/index.html",
+    "build": "parcel build public/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sudhanshu3314/Canteen-Meal-Management-System.git"
+  },
+  "keywords": [
+    "Meal",
+    "canteen",
+    "students",
+    "institute",
+    "Food"
+  ],
+  "author": "Sudhanshu Barnwal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sudhanshu3314/Canteen-Meal-Management-System/issues"
+  },
+  "homepage": "https://github.com/Sudhanshu3314/Canteen-Meal-Management-System#readme",
+  "devDependencies": {
+    "parcel": "^2.15.4"
+  },
+  "dependencies": {
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  }
+}
