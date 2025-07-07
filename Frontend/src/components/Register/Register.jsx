@@ -125,7 +125,7 @@ export default function RegisterUser() {
                         </Button>
                         <div style={styles.signup}>
                             <Text style={styles.text}>Already have an account? </Text>
-                            <Link to="#">Sign in</Link>
+                            <Link to="/register">Sign in</Link>
                         </div>
                     </Form.Item>
                 </Form>

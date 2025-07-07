@@ -103,7 +103,7 @@ export default function LoginUser() {
                         </Button>
                         <div style={styles.footer}>
                             <Text style={styles.text}>Don't have an account?</Text>{" "}
-                            <Link to="">Sign up now</Link>
+                            <Link to="/login">Sign up now</Link>
                         </div>
                     </Form.Item>
                 </Form>
