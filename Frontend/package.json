@@ -1,35 +1,35 @@
 {
-  "name": "canteen-meal-management-system",
+  "name": "frontend",
   "version": "1.0.0",
-  "description": "This Canteen Meal management system is aiming for not getting food waste in canteen.",
-  "main": "index.js",
+  "description": "Canteen Problem Solving Of Igidr Institute",
   "scripts": {
     "test": "\"jest\"",
     "start": "parcel public/index.html",
-    "build": "parcel build public/index.html"
+    "build": "parcel public/index.html"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sudhanshu3314/Canteen-Meal-Management-System.git"
+    "url": "https://github.com/Sudhanshu3314/Canteen-Meal-Management-System.git"
   },
   "keywords": [
-    "Meal",
-    "canteen",
-    "students",
+    "Canteen",
+    "food",
     "institute",
-    "Food"
+    "students"
   ],
   "author": "Sudhanshu Barnwal",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Sudhanshu3314/Canteen-Meal-Management-System/issues"
-  },
-  "homepage": "https://github.com/Sudhanshu3314/Canteen-Meal-Management-System#readme",
   "devDependencies": {
     "parcel": "^2.15.4"
   },
   "dependencies": {
+    "@ant-design/v5-patch-for-react-19": "^1.0.3",
+    "@mui/material": "^7.2.0",
+    "@tailwindcss/postcss": "^4.1.11",
+    "antd": "^5.26.4",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-router": "^7.6.3",
+    "tailwindcss": "^4.1.11"
   }
 }
