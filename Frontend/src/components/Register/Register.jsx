@@ -1,72 +1,25 @@
-import React from "react";
-import { Button, Form, Grid, Input, theme, Typography } from "antd";
+import { Button, Form, Input, Typography } from "antd";
 import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
+import { Link } from "react-router";
 
-const { useToken } = theme;
-const { useBreakpoint } = Grid;
-const { Text, Title, Link } = Typography;
+const { Title, Text } = Typography;
 
 export default function RegisterUser() {
-    const { token } = useToken();
-    const screens = useBreakpoint();
-
     const onFinish = (values) => {
         console.log("Received values of form: ", values);
     };
 
-    const styles = {
-        container: {
-            margin: "0 auto",
-            padding: screens.md ? `${token.paddingXL}px` : `${token.paddingXL}px ${token.padding}px`,
-            width: "380px",
-        },
-        forgotPassword: {
-            float: "right",
-        },
-        header: {
-            marginBottom: token.marginXL,
-            textAlign: "center",
-        },
-        section: {
-            alignItems: "center",
-            backgroundColor: token.colorBgContainer,
-            display: "flex",
-            height: screens.sm ? "100vh" : "auto",
-            padding: screens.md ? `${token.sizeXXL}px 0px` : "0px",
-        },
-        signup: {
-            marginTop: token.marginLG,
-            textAlign: "center",
-            width: "100%",
-        },
-        text: {
-            color: token.colorTextSecondary,
-        },
-        title: {
-            fontSize: screens.md ? token.fontSizeHeading2 : token.fontSizeHeading3,
-        },
-    };
-
     return (
-        <section style={styles.section}>
-            <div style={styles.container}>
-                <div style={styles.header}>
-                    <svg
-                        width="33"
-                        height="32"
-                        viewBox="0 0 33 32"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <rect x="0.125" width="32" height="32" rx="6.4" fill="#1890FF" />
-                        <path d="M19.3251 4.80005H27.3251V12.8H19.3251V4.80005Z" fill="white" />
-                        <path d="M12.925 12.8H19.3251V19.2H12.925V12.8Z" fill="white" />
-                        <path d="M4.92505 17.6H14.525V27.2001H4.92505V17.6Z" fill="white" />
-                    </svg>
-
-                    <Title style={styles.title}>Sign up</Title>
-                    <Text style={styles.text}>Join us! Create an account to get started.</Text>
+        <section className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#e0c3fc] via-[#8ec5fc] to-[#ffffff] px-4 font-poppins">
+            <div className="w-full max-w-md bg-white/30 backdrop-blur-lg shadow-2xl border border-white/40 rounded-3xl p-8 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,0,0,0.1)]">
+                <div className="text-center mb-8">
+                    <div className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-pink-500 to-purple-600">
+                        ☕ Chai GPT
+                    </div>
+                    <p className="text-xl font-semibold text-gray-700 mt-1 mb-2">Sign up & sip the intelligence</p>
+                    <p className="text-sm text-gray-500">Enhance With AI - Adrak and ilaichi</p>
                 </div>
+
                 <Form
                     name="normal_signup"
                     onFinish={onFinish}
@@ -75,14 +28,13 @@ export default function RegisterUser() {
                 >
                     <Form.Item
                         name="name"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please input your Name!",
-                            },
-                        ]}
+                        rules={[{ required: true, message: "Please input your Name!" }]}
                     >
-                        <Input prefix={<UserOutlined />} placeholder="Name" />
+                        <Input
+                            prefix={<UserOutlined className="text-gray-400" />}
+                            placeholder="Full Name"
+                            className="py-2 rounded-lg shadow-sm focus:shadow-md focus:border-indigo-500"
+                        />
                     </Form.Item>
 
                     <Form.Item
@@ -91,21 +43,22 @@ export default function RegisterUser() {
                             {
                                 type: "email",
                                 required: true,
-                                message: "Please input your Email!",
+                                message: "Please input a valid Email!",
                             },
                         ]}
                     >
-                        <Input prefix={<MailOutlined />} placeholder="Email" />
+                        <Input
+                            prefix={<MailOutlined className="text-gray-400" />}
+                            placeholder="Email Address"
+                            className="py-2 rounded-lg shadow-sm focus:shadow-md focus:border-indigo-500"
+                        />
                     </Form.Item>
 
                     <Form.Item
                         name="password"
                         extra="Password needs to be at least 8 characters."
                         rules={[
-                            {
-                                required: true,
-                                message: "Please input your Password!",
-                            },
+                            { required: true, message: "Please input your Password!" },
                             {
                                 min: 8,
                                 message: "Password must be at least 8 characters.",
@@ -113,19 +66,30 @@ export default function RegisterUser() {
                         ]}
                     >
                         <Input.Password
-                            prefix={<LockOutlined />}
-                            type="password"
+                            prefix={<LockOutlined className="text-gray-400" />}
                             placeholder="Password"
+                            className="py-2 rounded-lg shadow-sm focus:shadow-md focus:border-indigo-500"
                         />
                     </Form.Item>
 
-                    <Form.Item style={{ marginBottom: "0px" }}>
-                        <Button block type="primary" htmlType="submit">
+                    <Form.Item className="mb-0">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            block
+                            className="!h-10 !rounded-xl !bg-indigo-600 hover:!bg-indigo-700 transition-all duration-200 shadow-md hover:shadow-lg"
+                        >
                             Sign up
                         </Button>
-                        <div style={styles.signup}>
-                            <Text style={styles.text}>Already have an account? </Text>
-                            <Link to="/register">Sign in</Link>
+
+                        <div className="text-center mt-4">
+                            <Text className="text-gray-600">Already have an account? </Text>
+                            <Link
+                                to="/login"
+                                className="text-indigo-600 hover:text-indigo-800 font-medium transition duration-200"
+                            >
+                                Sign in
+                            </Link>
                         </div>
                     </Form.Item>
                 </Form>
