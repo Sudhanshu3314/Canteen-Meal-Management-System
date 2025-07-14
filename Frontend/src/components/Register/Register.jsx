@@ -43,7 +43,7 @@ export default function RegisterUser() {
                             {
                                 type: "email",
                                 required: true,
-                                message: "Please input a valid Email!",
+                                message:'Please enter a valid email address',
                             },
                         ]}
                     >

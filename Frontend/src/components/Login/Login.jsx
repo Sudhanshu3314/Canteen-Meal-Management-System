@@ -121,7 +121,7 @@ export default function LoginUser() {
                                 {
                                     type: "email",
                                     required: true,
-                                    message: "Please input your email!",
+                                    message: 'Please enter a valid email address',
                                 },
                             ]}
                         >
