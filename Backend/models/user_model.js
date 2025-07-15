@@ -25,6 +25,6 @@ const UserSchema = new Schema({
     timestamps: true // adds createdAt and updatedAt fields automatically
 });
 
-const User = mongoose.model('User', userSchema);
+const UserModel = mongoose.model('User', UserSchema);
 
-module.exports = User;
+module.exports = UserModel;

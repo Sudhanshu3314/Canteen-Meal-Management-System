@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require("body-parser")
 const cors = require("cors")
+const AuthRouter = require("./Routes/AuthRouter")
 
 require('dotenv').config();
 require("./Models/db")
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 
 app.use(bodyParser.json())
 app.use(cors())
+app.use("/auth",AuthRouter)
 
 // Serve frontend if needed
 // app.use(express.static(path.join(__dirname, 'client', 'build')));
