@@ -1,8 +1,9 @@
 // models/User.js
 
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
+const UserSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -11,18 +12,19 @@ const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true, // Ensures email is unique
-        trim: true,
+        unique: true,  // Ensures email is unique
         lowercase: true,
-        match: [/\S+@\S+\.\S+/]
+        trim: true
     },
     password: {
         type: String,
         required: true,
-        minlength: 8
+        minlength: 8 
     }
-}, { timestamps: true });
+}, {
+    timestamps: true // adds createdAt and updatedAt fields automatically
+});
 
-const User = mongoose.model('user_model', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
