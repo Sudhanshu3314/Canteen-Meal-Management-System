@@ -1,23 +1,34 @@
-const UserModel = require("../models/user_model")
-const bcrypt = require('bcrypt')
+const UserModel = require("../models/user_model");
+const bcrypt = require('bcrypt');
 
 const signup = async (req, res) => {
     try {
-        const { name, email, password } = req.body
-        const user = await UserModel.findOne({ email });
-        if (user) {
-            return res.status(409).json({ message: "User is already exist, you can login", success: false });
+        const { name, email, password } = req.body;
+
+        // Input validation (optional but recommended)
+        if (!name || !email || !password) {
+            return res.status(400).json({ message: "All fields are required", success: false });
         }
-        const userModel = new UserModel({ name, email, password });
-        userModel.password = await bcrypt.hash(password, 10);
-        await userModel.save();
-        return res.status(201).json({ message: "Signup successfully", success: true });
+
+        const existingUser = await UserModel.findOne({ email });
+        if (existingUser) {
+            return res.status(409).json({ message: "User already exists, please login", success: false });
+        }
+
+        // Hash the password before creating user
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newUser = new UserModel({ name, email, password: hashedPassword });
+        await newUser.save();
+
+        return res.status(201).json({ message: "Signup successful", success: true });
 
     } catch (err) {
-        return res.status(500).json({ message: "Internal Server Error", success: true });
+        console.error("Signup error:", err);
+        return res.status(500).json({ message: "Internal Server Error", success: false });
     }
-}
+};
 
 module.exports = {
     signup
-} 
+};
