@@ -20,6 +20,12 @@ const signup = async (req, res) => {
         const newUser = new UserModel({ name, email, password: hashedPassword });
         await newUser.save();
 
+        console.log("New user registered:", {
+            id: newUser._id,
+            name: newUser.name,
+            email: newUser.email
+        });
+
         return res.status(201).json({ message: "Signup successful", success: true });
     } catch (err) {
         console.error("Signup error:", err);
@@ -51,6 +57,12 @@ const login = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
         );
+
+        console.log("User logged in successfully:", {
+            id: user._id,
+            name: user.name,
+            email: user.email
+        });
 
         return res.status(200).json({
             message: "Login successful",

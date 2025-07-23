@@ -1,16 +1,37 @@
 import React, { useState } from "react";
 import { Button, Form, Input, Typography, message } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { useAuth } from "../../context/AuthContext";
 
 const { Text } = Typography;
 
 export default function LoginUser() {
     const [isResetMode, setIsResetMode] = useState(false);
 
-    const onLoginFinish = (values) => {
-        console.log("Login values: ", values);
-        // Add login logic here
+    const { login } = useAuth();
+    const navigate = useNavigate();
+
+    const onLoginFinish = async (values) => {
+        try {
+            const res = await fetch("http://localhost:8080/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                login(data.user);
+                message.success("Login successful!");
+                navigate("/home"); // Redirect to Home
+            } else {
+                message.error(data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            message.error("Login failed!");
+        }
     };
 
     const onResetFinish = (values) => {

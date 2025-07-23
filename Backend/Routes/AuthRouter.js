@@ -9,7 +9,11 @@ router.post("/login", loginValidation, login)
 
 // Example: protected route
 router.get("/profile", verifyToken, (req, res) => {
-    res.json({ message: "Protected user profile route", user: req.user });
+    res.status(200).json({
+        success: true,
+        profile: req.user, 
+    });
 });
+
 
 module.exports = router

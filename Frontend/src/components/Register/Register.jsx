@@ -1,13 +1,33 @@
-import { Button, Form, Input, Typography } from "antd";
+import { Button, Form, Input, Typography ,message} from "antd";
 import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const { Title, Text } = Typography;
 
 export default function RegisterUser() {
-    const onFinish = (values) => {
-        console.log("Received values of form: ", values);
+    const navigate = useNavigate();
+
+    const onFinish = async (values) => {
+        try {
+            const res = await fetch("http://localhost:8080/auth/signup", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(values),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                message.success("Registration successful!");
+                navigate("/login");
+            } else {
+                message.error(data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            message.error("Registration failed!");
+        }
     };
+
 
     return (
         <section className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#e0c3fc] via-[#8ec5fc] to-[#ffffff] px-4 font-poppins">

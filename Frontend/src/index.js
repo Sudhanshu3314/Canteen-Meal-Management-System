@@ -10,43 +10,29 @@ import Profile from "./components/Profile/Profile";
 import Lunch from "./components/Lunch/Lunch";
 import Dinner from "./components/Dinner/Dinner";
 import Home from "./components/Home/Home";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const appRouter = createBrowserRouter([
     {
         path: "/",
         element: <App />,
         children: [
+            { index: true, element: <LoginUser /> },
+            { path: "login", element: <LoginUser /> },
+            { path: "register", element: <RegisterUser /> },
             {
-                index: true,
-                element: <LoginUser />,
-            },
-            {
-                path: "login",
-                element: <LoginUser />,
-            },
-            {
-                path: "register",
-                element: <RegisterUser />,
-            },
-            {
-                path: "/",
-                element: <Body />, // Nested container
+                element: <ProtectedRoute />,
                 children: [
                     {
                         path: "/",
-                        element: <Home />,
-                    },
-                    {
-                        path: "/profile",
-                        element: <Profile />,
-                    },
-                    {
-                        path: "/lunch",
-                        element: <Lunch />,
-                    },
-                    {
-                        path: "/dinner",
-                        element: <Dinner />,
+                        element: <Body />,
+                        children: [
+                            { path: "/home", element: <Home /> },
+                            { path: "profile", element: <Profile /> },
+                            { path: "lunch", element: <Lunch /> },
+                            { path: "dinner", element: <Dinner /> },
+                        ],
                     },
                 ],
             },
@@ -55,4 +41,8 @@ const appRouter = createBrowserRouter([
 ]);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(<RouterProvider router={appRouter} />);
+root.render(
+    <AuthProvider>
+        <RouterProvider router={appRouter} />
+    </AuthProvider>
+);

@@ -6,7 +6,7 @@ const AuthRouter = require("./Routes/AuthRouter")
 
 require('dotenv').config();
 require("./Models/db")
-const PORT = process.env.PORT || 9004;
+const PORT = process.env.PORT || 8080;
 
 app.use(express.json());
 
