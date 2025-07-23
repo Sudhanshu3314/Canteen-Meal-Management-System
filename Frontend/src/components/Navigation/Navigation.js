@@ -6,6 +6,7 @@ export default function Navigation() {
     const [isOpen, setIsOpen] = useState(false);
 
     const Links = [
+        { name: "Home", path: "/" },
         { name: "Profile", path: "/profile" },
         { name: "Lunch", path: "/lunch" },
         { name: "Dinner", path: "/dinner" },
@@ -26,6 +27,7 @@ export default function Navigation() {
                     >
                         <Menu size={28} />
                     </button>
+                        <img src="https://igidr.samarth.ac.in/uploads/uims/ea5086a2733de95ab628e64aa6da8ba80808129b3c7dc0fdb28f357b9beab6011_1605882012_27287335_logo.png" className="w-[50px] bg-white" />
                     <h1 className="text-3xl font-extrabold tracking-wide hover:tracking-widest transition-all duration-300">
                         IGIDR
                     </h1>

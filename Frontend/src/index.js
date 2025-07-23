@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "@ant-design/v5-patch-for-react-19";
-import { createBrowserRouter, RouterProvider } from "react-router"; // ✅ use 'react-router-dom'
+import { createBrowserRouter, RouterProvider } from "react-router";
 
 import LoginUser from "./components/Login/Login";
 import RegisterUser from "./components/Register/Register";
@@ -9,6 +9,7 @@ import Body from "./components/Body";
 import Profile from "./components/Profile/Profile";
 import Lunch from "./components/Lunch/Lunch";
 import Dinner from "./components/Dinner/Dinner";
+import Home from "./components/Home/Home";
 
 const appRouter = createBrowserRouter([
     {
@@ -33,8 +34,9 @@ const appRouter = createBrowserRouter([
                 children: [
                     {
                         path: "/",
-                        element: <Profile />,
-                    }, {
+                        element: <Home />,
+                    },
+                    {
                         path: "/profile",
                         element: <Profile />,
                     },
