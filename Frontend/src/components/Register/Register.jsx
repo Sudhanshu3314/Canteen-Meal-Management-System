@@ -1,4 +1,4 @@
-import { Button, Form, Input, Typography ,message} from "antd";
+import { Button, Form, Input, Typography, message } from "antd";
 import { LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router";
 
@@ -33,7 +33,7 @@ export default function RegisterUser() {
         <section className="flex items-center justify-center min-h-screen bg-gradient-to-br from-[#e0c3fc] via-[#8ec5fc] to-[#ffffff] px-4 font-poppins">
             <div className="w-full max-w-md bg-white/30 backdrop-blur-lg shadow-2xl border border-white/40 rounded-3xl p-8 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,0,0,0.1)] mb-[150px]">
                 <div className="text-center mb-8">
-                    <div className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-pink-500 to-purple-600">
+                    <div className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-pink-500 to-purple-600">
                         ☕ Chai GPT
                     </div>
                     <p className="text-xl font-semibold text-gray-700 mt-1 mb-2">Sign up & sip the intelligence</p>
@@ -63,7 +63,7 @@ export default function RegisterUser() {
                             {
                                 type: "email",
                                 required: true,
-                                message:'Please enter a valid email address',
+                                message: 'Please enter a valid email address',
                             },
                         ]}
                     >

@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 
 export default function Navigation() {
     const [isOpen, setIsOpen] = useState(false);
-    
+
     const navigate = useNavigate();
     const { logout } = useAuth();
     const Links = [
@@ -47,7 +47,12 @@ export default function Navigation() {
                             <span className="absolute left-0 -bottom-1 w-0 h-0.5 bg-[#FFD369] transition-all group-hover:w-full duration-300" />
                         </NavLink>
                     ))}
-                    <button className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-md font-semibold transition-all">
+                    <button
+                        onClick={() => {
+                            setIsOpen(false);
+                            logout();
+                            navigate("/login");
+                        }} className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-md font-semibold transition-all">
                         Logout
                     </button>
                 </div>

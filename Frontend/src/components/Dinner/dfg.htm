@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGIDR How-To Guide</title>
+    <style>
+        :root {
+            --primary-color: #4a148c;
+            --secondary-color: #ff4081;
+            --accent-color: #7c4dff;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --card-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #e1e4e8;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            margin-top: 30px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .toc {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .toc ol {
+            column-count: 2;
+            column-gap: 30px;
+        }
+
+        .toc li {
+            margin-bottom: 8px;
+            break-inside: avoid;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toc a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+
+        .content-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .back-to-top {
+            text-align: right;
+            margin-top: 20px;
+        }
+
+        .back-to-top a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .note {
+            background-color: #fff8e1;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+
+        .warning {
+            background-color: #ffebee;
+            padding: 15px;
+            border-left: 4px solid #f44336;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .toc ol {
+                column-count: 1;
+            }
+
+            .content-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>IGIDR HOW-TO GUIDE</h1>
+        <p>Comprehensive guide for accessing IGIDR resources and software</p>
+    </header>
+
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ol>
+            <li><a href="#netdrive">Connect to Network Drives</a></li>
+            <li><a href="#vpn">How to access LAN through VPN</a></li>
+            <li><a href="#unix">Connect to UNIX systems</a></li>
+            <li><a href="#soft">Available servers and softwares</a></li>
+            <li><a href="#term">Connect to Terminal Server</a></li>
+            <li><a href="#netprint">Connect to Network Printers</a></li>
+            <li><a href="#Internet">Connect to Internet</a></li>
+            <li><a href="#Gauss">Use Gauss</a></li>
+            <li><a href="#Stata">Use Stata</a></li>
+            <li><a href="#SAS">Use SAS</a></li>
+            <li><a href="#Tex">Use Tex</a></li>
+            <li><a href="#GAMS">Use GAMS</a></li>
+            <li><a href="#DEA">Use DEA</a></li>
+            <li><a href="#Prowess">Use Prowess</a></li>
+            <li><a href="#Clineole">Use Capitaline Plus</a></li>
+            <li><a href="#FTP">Use FTP</a></li>
+            <li><a href="#SSH">Use SSH</a></li>
+            <li><a href="#storage">Restore deleted files</a></li>
+            <li><a href="#epsilon">Epsilon 10</a></li>
+            <li><a href="#file-transfer">Transfer files between UNIX and Windows</a></li>
+            <li><a href="#matlab">Use Matlab</a></li>
+            <li><a href="#mathematica">Use Mathematica</a></li>
+            <li><a href="#RATS">Use RATS</a></li>
+            <li><a href="#ox">OxMetrics</a></li>
+        </ol>
+    </div>
+
+    <div class="content-section" id="netdrive">
+        <h2>Connect to Network Drives</h2>
+        <ol>
+            <li>Double click on the Network Neighbourhood icon, &gt; Select Entire network &gt; Select the machine/group
+                &gt; Right click on the Service / Folder &gt; Select the Map Network Drive &gt; Select Drive Name.</li>
+            <li>Alternatively, if you know the service, Directly Right click on the My Computer icon &gt; Select Map
+                network Drive &gt; Select Drive Name &gt; Type the service path. (e.g. \\STORAGE\soft)</li>
+        </ol>
+        
+    </div>
+
+    <div class="content-section" id="vpn">
+        <h2>Connect IGIDR LAN through VPN</h2>
+        <ol>
+            <li>Open your browser and type <a href="https://150.107.115.242">https://150.107.115.242</a> or <a
+                    href="https://14.139.112.194">https://14.139.112.194</a></li>
+            <li>When prompted type your username and password which you used to login on computer centre lab.</li>
+            <li>Click on CTERM from the screen.</li>
+            <li>Once you login to CTERM you can use all the software /databases you used to access inside IGIDR.</li>
+            <li>Alternatively you can download hysecure vpn client or App and install in your computer or tablet. Give
+                any of the above ip as hysecure server address, enter your domain id and password then connect.</li>
+        </ol>
+        <div class="note">
+            <p><strong>Note:</strong> Terminal server profiles are temporary. Please do not store your data in terminal
+                server and store them in your allotted storage space after processing. The terminal server profile will
+                be cleared without any notice.</p>
+        </div>
+        
+    </div>
+
+    <div class="content-section" id="unix">
+        <h2>Connect to UNIX</h2>
+        <p>The following are the major UNIX systems at IGIDR:</p>
+
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>IP Address</th>
+            </tr>
+            <tr>
+                <td>COMPUTE</td>
+                <td>192.9.10.242</td>
+            </tr>
+            <tr>
+                <td>TRISHUL</td>
+                <td>192.9.13.6 (Connect using VT320)</td>
+            </tr>
+            <tr>
+                <td>KAMADHENU</td>
+                <td>192.9.10.3</td>
+            </tr>
+            <tr>
+                <td>REDHAT</td>
+                <td>192.9.10.3</td>
+            </tr>
+        </table>
+
+        <h3>CONNECT TO UNIX SYSTEM USING SSH</h3>
+        <ol>
+            <li>Click on Start &gt; All Programs &gt; SSH Secure SHELL, Select SSH Secure Shell Client. or you may click
+                SSH icon on your desktop. Then click on quick connect.</li>
+            <li>Connect to Unix systems
+                <ul>
+                    <li>a. In the Host Name field, type system name (example: BRAHMA/REDHAT)</li>
+                    <li>b. In the User Name field, type your user name.</li>
+                    <li>c. In the Password field, type your password.</li>
+                </ul>
+            </li>
+            <li>You will now be logged in to your home directory.</li>
+        </ol>
+        
+    </div>
+
+    <div class="content-section" id="soft">
+        <h2>Available servers and softwares</h2>
+        <p>We have two common Laser Printers in the Computer Centre and Network Printers for faculty and staff printing
+            in each floor of every block.</p>
+
+        <table>
+            <tr>
+                <th>SERVER NAME</th>
+                <th>ENVIRONMENT</th>
+                <th>SOFTWARE AVAILABLE</th>
+            </tr>
+            <tr>
+                <td>cterm.igidr.ac.in</td>
+                <td>Windows</td>
+                <td>SAS, STATA, RATS and open source compiler and Software like octave, R etc</td>
+            </tr>
+            <tr>
+                <td>cterm.igidr.ac.in</td>
+                <td>WINDOWS</td>
+                <td>STATA, MATHEMATICA, Matlab, EViews, RATS office/Database application like censusinfo, prowess</td>
+            </tr>
+            <tr>
+                <td>term.igidr.ac.in</td>
+                <td>Windows</td>
+                <td>GAUSS, MATLAB</td>
+            </tr>
+            <tr>
+                <td>ntxstorage.igidr.ac.in</td>
+                <td>NAS</td>
+                <td>Users data</td>
+            </tr>
+            <tr>
+                <td>vayu3.igidr.ac.in</td>
+                <td>WINDOWS</td>
+                <td>IGIDR DOMAIN</td>
+            </tr>
+            <tr>
+                <td>opac.igidr.ac.in</td>
+                <td>LNIX</td>
+                <td>Koha Library software (OPAC)</td>
+            </tr>
+            <tr>
+                <td>kamadhenu.igidr.ac.in</td>
+                <td>LINUX</td>
+                <td>Intranet server</td>
+            </tr>
+            <tr>
+                <td>www.igidr.ac.in</td>
+                <td>LINUX</td>
+                <td>web server</td>
+            </tr>
+            <tr>
+                <td>Elibrary.igidr.ac.in</td>
+                <td>NAS</td>
+                <td>CDROM Databases</td>
+            </tr>
+            <tr>
+                <td>gmail.igidr.ac.in</td>
+                <td>Cloud</td>
+                <td>Google Apps</td>
+            </tr>
+        </table>
+        
+    </div>
+
+    <!-- Additional sections would follow the same pattern -->
+
+    <div class="content-section" id="contact">
+        <h2>Contact</h2>
+        <p>Send comments and inquiries to: <a href="mailto:hdesk@igidr.ac.in">Helpdesk</a></p>
+        <p><strong>Please note that all the software at redhat is available at /usr/local</strong></p>
+    </div>
+</body>
+
+</html>
