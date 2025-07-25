@@ -24,7 +24,7 @@ const Home = () => {
                 {/* Menu Cards Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-12">
                     {/* Lunch Menu Card */}
-                    <div className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 p-6 sm:p-10 border border-blue-100">
+                    <div className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 p-6 sm:p-10 border border-blue-100 bg-gradient-to-b from-[rgba(18,219,0,0.1)] via-white to-[rgba(18,219,0,0.1)]">
                         <div className="flex items-center mb-4 sm:mb-6">
                             <FaUtensils className="text-teal-600 text-3xl sm:text-4xl mr-3 sm:mr-4 animate-bounce-in" />
                             <h2 className="text-2xl sm:text-3xl font-bold text-teal-800">Lunch Delights</h2>
@@ -43,7 +43,7 @@ const Home = () => {
                     </div>
 
                     {/* Dinner Menu Card */}
-                    <div className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 p-6 sm:p-10 border border-pink-100">
+                    <div className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 p-6 sm:p-10 border border-pink-100 bg-gradient-to-b from-[rgba(219,0,172,0.1)] via-white to-[rgba(219,0,172,0.1)]">
                         <div className="flex items-center mb-4 sm:mb-6">
                             <FaMoon className="text-purple-600 text-3xl sm:text-4xl mr-3 sm:mr-4 animate-bounce-in" />
                             <h2 className="text-2xl sm:text-3xl font-bold text-purple-800">Dinner Specials</h2>

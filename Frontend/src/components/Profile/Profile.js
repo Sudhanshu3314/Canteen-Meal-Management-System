@@ -55,8 +55,8 @@ const Profile = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="max-w-md w-full mx-auto bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 transform hover:-translate-y-1">
+        <div className="min-h-screen bg-gradient-to-br from-teal-100 via-violet-100 to-red-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+            <div className="max-w-md w-full mx-auto bg-white rounded-3xl shadow-lg hover:shadow-xl transition-shadow duration-300 p-8 transform hover:-translate-y-1  bg-gradient-to-b from-[rgba(255,200,129,0.22)] via-white to-[rgba(142,255,131,0.22)]">
                 <div className="text-center mb-8">
                     <div className="bg-indigo-500 text-white rounded-full p-4 inline-flex items-center justify-center shadow-md mb-4 animate-bounce-once">
                         <UserOutlined className="text-3xl" />
