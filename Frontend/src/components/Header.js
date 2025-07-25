@@ -3,7 +3,7 @@ import Navigation from './Navigation/Navigation'
 
 const Header = () => {
   return (
-    <div>
+    <div jsx="true">
         <Navigation/>
     </div>
   )

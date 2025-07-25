@@ -5,7 +5,7 @@ import Footer from './components/Footer'
 
 const App = () => {
     return (
-        <div>
+        <div jsx="true">
             <div className="min-h-screen flex flex-col">
                 <Header />
                 <main className="flex-grow">

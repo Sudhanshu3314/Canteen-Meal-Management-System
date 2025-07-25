@@ -2,7 +2,7 @@ import { Outlet } from "react-router"
 
 const Body = () => {
     return (
-        <div>
+        <div jsx="true">
             <Outlet /> 
         </div>
     )

@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 const Footer = () => {
     return (
-        <footer className="bg-gray-200 text-gray-800 w-full shadow-2xl p-8">
+        <footer jsx="true" className="bg-gray-200 text-gray-800 w-full shadow-2xl p-8">
             <div className="max-w-7xl mx-auto px-4 py-6 sm:flex sm:justify-between sm:items-center">
                 {/* Left Section: Title and Description */}
                 <div className="text-center sm:text-left mb-6 sm:mb-0">
@@ -21,7 +21,7 @@ const Footer = () => {
                         © {new Date().getFullYear()} <span className="font-semibold text-purple-700">IGIDR</span>. All rights reserved.
                     </p>
                     <p className="text-xs text-gray-500 mt-1">
-                        Developed By <Link to="https://whytedevil.netlify.app/" className="text-blue-700">Sudhanshu Barnwal</Link> for the IGIDR community.
+                        Developed By <Link target="_blank" to="https://whytedevil.netlify.app/" className="text-blue-700">Sudhanshu Barnwal</Link> for the IGIDR community.
                     </p>
                 </div>
             </div>

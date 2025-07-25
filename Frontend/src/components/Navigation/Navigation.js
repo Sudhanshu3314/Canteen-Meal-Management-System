@@ -21,7 +21,7 @@ export default function Navigation() {
         ${isActive ? "text-[#FFD369] underline underline-offset-4" : "text-white hover:text-[#FFD369]"}`;
 
     return (
-        <nav className="bg-[#1e1e2f] text-white shadow-md relative z-50">
+        <nav jsx="true" className="bg-[#1e1e2f] text-white shadow-md relative z-50">
             <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
                 {/* Brand + Hamburger */}
                 <div className="flex items-center gap-4">
