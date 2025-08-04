@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthContext";
 
 const { Text } = Typography;
 
-export default function LoginUser() {
+const Login = () => {
     const [isResetMode, setIsResetMode] = useState(false);
 
     const { login } = useAuth();
@@ -41,19 +41,19 @@ export default function LoginUser() {
     };
 
     return (
-        <section jsx="true" className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-100 via-amber-100 to-white px-4 font-poppins">
-            <div className="w-full max-w-md bg-white/40 backdrop-blur-lg shadow-2xl border border-white/50 rounded-3xl p-8 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,0,0,0.1)] mb-[150px]">
-                <div className="text-center mb-8">
-                    <div className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-amber-400 to-slate-600">
-                        ☕ Chai GPT
+        <section jsx="true" className="flex items-center justify-center min-h-screen bg-gradient-to-br from-rose-100 via-amber-100 to-white px-4 sm:px-6 md:px-8 font-poppins">
+            <div className="w-full max-w-md sm:max-w-lg bg-white/40 backdrop-blur-lg shadow-2xl border border-white/50 rounded-3xl p-6 sm:p-8 transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,0,0,0.1)] mb-[100px] sm:mb-[150px]">
+                <div className="text-center mb-6 sm:mb-8">
+                    <div className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-rose-500 via-amber-400 to-slate-600">
+                        &#x1F375; Chai GPT
                     </div>
-                    <p className="text-xl font-semibold text-slate-700 mt-1 mb-2">
+                    <p className="text-lg sm:text-xl font-semibold text-slate-700 mt-1 mb-2">
                         {isResetMode ? "Reset Password" : "Welcome Back"}
                     </p>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm sm:text-base text-slate-500">
                         {isResetMode
                             ? "Enter your email to receive a password reset link."
-                            : "Enhance With AI - Adrak and ilaichi☕"}
+                            : `Enhance With AI - Adrak and ilaichi \u{1F375}`}
                     </p>
                 </div>
 
@@ -178,3 +178,4 @@ export default function LoginUser() {
         </section>
     );
 }
+export default Login

@@ -107,7 +107,7 @@ const Profile = () => {
                 )}
             </div>
             {/* Custom CSS for a subtle animation */}
-            <style jsx>{`
+            <style jsx="true">{`
                 @keyframes bounce-once {
                     0%, 100% {
                         transform: translateY(0);

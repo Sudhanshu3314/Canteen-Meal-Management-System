@@ -30,7 +30,7 @@ const LunchForm = ({ studentId }) => {
     };
 
     return (
-        <div className="p-6 bg-white rounded-xl shadow-md">
+        <div jsx="true" className="p-6 bg-white rounded-xl shadow-md">
             <h2 className="text-xl font-semibold mb-4">🍽️ Will you eat lunch today?</h2>
             <div className="flex gap-4">
                 <button

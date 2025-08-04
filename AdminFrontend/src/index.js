@@ -3,16 +3,15 @@ import App from "./App";
 import "@ant-design/v5-patch-for-react-19";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
 import Body from "./components/Body";
-import Profile from "./components/Profile/Profile";
 import Lunch from "./components/Lunch/Lunch";
 import Dinner from "./components/Dinner/Dinner";
 import Home from "./components/Home/Home";
 import { AuthProvider } from "./context/AuthContext";
-import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorPage from "./components/Error/ErrorPage";
+import Report from "./components/Report/Report";
+import ProtectedRoute from "./components/Authentication/ProtectedRoute";
+import Login from "./components/Authentication/Login";
 
 const appRouter = createBrowserRouter([
     {
@@ -20,20 +19,18 @@ const appRouter = createBrowserRouter([
         element: <App />,
         errorElement: <ErrorPage />,
         children: [
-            { index: true, element: <Login /> },
-            { path: "login", element: <Login /> },
-            { path: "register", element: <Register /> },
+            { path: "/home", element: <Home /> },
+            { path: "/", element: <Home /> },
+            { path: "/login", element: <Login /> },
             {
-                element: <ProtectedRoute />,
+                element: <ProtectedRoute />, // Protect all routes
                 children: [
                     {
-                        path: "/",
                         element: <Body />,
                         children: [
-                            { path: "/home", element: <Home /> },
-                            { path: "profile", element: <Profile /> },
-                            { path: "lunch", element: <Lunch /> },
-                            { path: "dinner", element: <Dinner /> },
+                            { path: "/report", element: <Report /> },
+                            { path: "/lunch", element: <Lunch /> },
+                            { path: "/dinner", element: <Dinner /> },
                         ],
                     },
                 ],
