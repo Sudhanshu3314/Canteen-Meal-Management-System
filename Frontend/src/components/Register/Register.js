@@ -17,10 +17,10 @@ const Register = () => {
 
             const data = await res.json();
             if (data.success) {
-                message.success("Registration successful!");
-                navigate("/login");
+                message.success("Registration successful! Please verify your email.");
+                navigate("/verify-info");
             } else {
-                message.error(data.message);
+                message.error(data.message || "Registration failed");
             }
         } catch (err) {
             console.error(err);

@@ -1,5 +1,3 @@
-// models/User.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -12,17 +10,22 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: true,
-        unique: true,  // Ensures email is unique
+        unique: true,
         lowercase: true,
         trim: true
     },
     password: {
         type: String,
         required: true,
-        minlength: 8 
-    }
+        minlength: 8
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    verificationToken: String
 }, {
-    timestamps: true // adds createdAt and updatedAt fields automatically
+    timestamps: true
 });
 
 const UserModel = mongoose.model('User', UserSchema);

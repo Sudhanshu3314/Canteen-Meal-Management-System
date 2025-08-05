@@ -13,6 +13,8 @@ import Home from "./components/Home/Home";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorPage from "./components/Error/ErrorPage";
+import VerifyEmail from "./components/Register/VerifyEmail";
+import VerifyInfo from "./components/Register/VerifyInfo";
 
 const appRouter = createBrowserRouter([
     {
@@ -23,6 +25,8 @@ const appRouter = createBrowserRouter([
             { index: true, element: <Login /> },
             { path: "login", element: <Login /> },
             { path: "register", element: <Register /> },
+            { path: "verify-info", element: <VerifyInfo /> },
+            { path: "verify-email/:token", element: <VerifyEmail /> },
             {
                 element: <ProtectedRoute />,
                 children: [

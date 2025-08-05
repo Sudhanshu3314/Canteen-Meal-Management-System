@@ -1,8 +1,9 @@
 const UserModel = require("../models/user_model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { v4: uuidv4 } = require("uuid");
+const { sendVerificationEmail } = require("../Utils/emailService");
 
-// Signup Controller
 const signup = async (req, res) => {
     try {
         const { name, email, password } = req.body;
@@ -17,23 +18,19 @@ const signup = async (req, res) => {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new UserModel({ name, email, password: hashedPassword });
+        const verificationToken = uuidv4();
+        const newUser = new UserModel({ name, email, password: hashedPassword, verificationToken });
         await newUser.save();
 
-        console.log("New user registered:", {
-            id: newUser._id,
-            name: newUser.name,
-            email: newUser.email
-        });
+        await sendVerificationEmail(email, verificationToken);
 
-        return res.status(201).json({ message: "Signup successful", success: true });
+        return res.status(201).json({ message: "Signup successful. Verification email sent.", success: true });
     } catch (err) {
         console.error("Signup error:", err);
         return res.status(500).json({ message: "Internal Server Error", success: false });
     }
 };
 
-// Login Controller
 const login = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -45,6 +42,10 @@ const login = async (req, res) => {
         const user = await UserModel.findOne({ email });
         if (!user) {
             return res.status(401).json({ message: "Invalid email or password", success: false });
+        }
+
+        if (!user.isVerified) {
+            return res.status(403).json({ message: "Please verify your email before logging in.", success: false });
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
@@ -80,7 +81,26 @@ const login = async (req, res) => {
     }
 };
 
+const verifyEmail = async (req, res) => {
+    const { token } = req.params;
+
+    try {
+        const user = await UserModel.findOne({ verificationToken: token });
+        if (!user) return res.status(400).json({ success: false, message: "Invalid or expired token." });
+
+        user.isVerified = true;
+        user.verificationToken = undefined;
+        await user.save();
+
+        return res.json({ success: true, message: "Email verified successfully." });
+    } catch (err) {
+        console.error("Verification error:", err);
+        return res.status(500).json({ success: false, message: "Verification failed." });
+    }
+};
+
 module.exports = {
     signup,
-    login
+    login,
+    verifyEmail
 };
