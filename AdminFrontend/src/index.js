@@ -19,8 +19,8 @@ const appRouter = createBrowserRouter([
         element: <App />,
         errorElement: <ErrorPage />,
         children: [
-            { path: "/home", element: <Home /> },
             { path: "/", element: <Home /> },
+            { path: "/home", element: <Home /> },
             { path: "/login", element: <Login /> },
             {
                 element: <ProtectedRoute />, // Protect all routes

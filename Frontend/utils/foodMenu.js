@@ -1,93 +1,135 @@
 const weeklyMenu = {
-    Monday: {
+    Sunday: {
         lunch: [
-            "Rice / Chapati",
-            "Rajma Masala",
-            "Aloo Gobi",
-            "Curd",
-            "Papad & Salad",
-            "Banana"
+            "Bhandara Aloo",
+            "Veg Tawa Dry",
+            "Puri",
+            "Moong Dal Tadka",
+            "Plane Rice",
+            "Salad (Cucumber, Carrot, Onion)",
+            "Fry Papad",
+            "Boondi Raita",
         ],
         dinner: [
-            "Jeera Rice",
-            "Palak Paneer",
-            "Roti",
-            "Soup",
-            "Buttermilk",
-            "Gulab Jamun"
-        ]
+            "Avial",
+            "Lauki + Chana Dal Fry",
+            "Chapati",
+            "Dal Fry",
+            "Rice",
+            "Veg Hot and Sour",
+            "Curd, Pickle",
+            "Papad",
+        ],
+    },
+    Monday: {
+        lunch: [
+            "Chana Masala",
+            "Cabbage Tomato",
+            "Chapati",
+            "Dal Tadka",
+            "Rice / Jeera Rice",
+            "Salad (Cucumber, Carrot, Onion)",
+            "Roasted Papad",
+            "Curd, Pickle",
+        ],
+        dinner: [
+            "Shahi Paneer",
+            "Gajar Methi",
+            "Chapati",
+            "Dal Panchratna",
+            "Rice",
+            "Pumpkin + Carrot",
+            "Raita",
+            "Fry Papad",
+        ],
     },
     Tuesday: {
         lunch: [
-            "Fried Rice",
+            "Veg Shahi Kurma",
+            "Bhendi Fry",
+            "Chapati",
             "Dal Fry",
-            "Cabbage Poriyal",
-            "Raita",
-            "Papad",
-            "Watermelon"
+            "Rice",
+            "Rosted Papad",
+            "Curd, Pickle",
+            "Salad",
         ],
         dinner: [
-            "Plain Rice / Chapati",
-            "Chole Masala",
-            "Aloo Matar",
-            "Green Salad",
-            "Curd",
-            "Halwa"
-        ]
+            "Veg Jalfrezi",
+            "Baigan Bharela",
+            "Chapati",
+            "Masoor Dal",
+            "Rice",
+            "Tomato Soup",
+            "Curd, Pickle",
+            "Fry Papad",
+        ],
     },
     Wednesday: {
         lunch: [
-            "Rice / Roti",
-            "Sambhar",
-            "Beans Curry",
-            "Raita",
-            "Papad",
-            "Apple"
+            "Veg Kolhapuri",
+            "Gobi Mutter Dry",
+            "Paratha",
+            "Moong Dal Fry",
+            "Plane Rice",
+            "Salad (Cucumber, Carrot, Onion)",
+            "Fryums",
+            "Curd, Pickle",
         ],
         dinner: [
-            "Vegetable Pulao",
-            "Paneer Butter Masala",
-            "Phulka",
-            "Sweet Corn Soup",
-            "Buttermilk",
-            "Custard"
-        ]
+            "Methi Malai Matar",
+            "Beetroot Poriyal",
+            "Chapati",
+            "Mix Dal",
+            "Rice",
+            "Lemon Corriander Soup",
+            "Curd, Pickle",
+            "Rosted Papad",
+        ],
     },
     Thursday: {
         lunch: [
-            "Rice / Roti",
-            "Moong Dal",
-            "Mixed Veg",
-            "Curd",
-            "Salad",
-            "Banana"
+            "Chole Bhature",
+            "Mixed Veg Dry",
+            "Bhature",
+            "Dal Makhani",
+            "Peas Pulao",
+            "Salad (Cucumber, Carrot, Onion)",
+            "Papad",
+            "Raita",
         ],
         dinner: [
-            "Tomato Rice",
-            "Chana Masala",
-            "Phulka",
-            "Soup",
-            "Sweet Dish",
-            "Lassi"
-        ]
+            "Veg Hyderabadi Masala",
+            "Matki Aloo Dry",
+            "Chapati",
+            "Moong Dal Fry",
+            "Rice",
+            "Veg Minestrone",
+            "Raita",
+            "Papad",
+        ],
     },
     Friday: {
         lunch: [
-            "Veg Biryani",
-            "Raita",
-            "Aloo Fry",
-            "Papad",
-            "Salad",
-            "Orange"
+            "Rajma Masala",
+            "Beans + Coconut Dry",
+            "Chapati",
+            "Dal Tadka",
+            "Plane Rice",
+            "Salad (Cucumber, Carrot, Onion)",
+            "Rosted Papad",
+            "Curd",
         ],
         dinner: [
-            "Plain Rice / Chapati",
-            "Paneer Tikka Masala",
-            "Dal Tadka",
-            "Soup",
-            "Buttermilk",
-            "Kheer"
-        ]
+            "Soyabean Masala",
+            "Bhendi Do Payza",
+            "Chapati",
+            "Dalma",
+            "Rice",
+            "Veg Manchao",
+            "Curd",
+            "Papad",
+        ],
     },
     Saturday: {
         lunch: [
@@ -107,24 +149,7 @@ const weeklyMenu = {
             "Masala Chaas"
         ]
     },
-    Sunday: {
-        lunch: [
-            "Special Veg Thali",
-            "Paneer Curry",
-            "Dal Fry",
-            "Rice & Chapati",
-            "Sweet",
-            "Fruit"
-        ],
-        dinner: [
-            "Pulao",
-            "Mix Veg",
-            "Soup",
-            "Curd",
-            "Gulab Jamun",
-            "Ice Cream"
-        ]
-    }
+   
 };
 
 export default weeklyMenu
