@@ -33,6 +33,9 @@ const VerifyInfo = () => (
                 Please open your inbox and click the link to verify your email and activate your account.
             </Paragraph>
             <div className="mt-6 text-xs text-gray-400">
+                <p><Link target="_blank" to="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" className="text-blue-700">Please, Click me to Verify yourself</Link></p>
+            </div>
+            <div className="mt-6 text-xs text-gray-400">
                 Didn’t receive the email ? 
                 <p><Link target="_blank" to="https://whytedevil.netlify.app/" className="text-blue-700">Contact Us</Link></p>
             </div>
