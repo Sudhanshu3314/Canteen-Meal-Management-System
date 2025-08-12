@@ -12,8 +12,12 @@ dayjs.extend(timezone);
 
 const Lunch = require("./models/lunchModel");
 const User = require("./models/userModel");
+const Dinner = require("./models/dinnerModel");
+
 const lunchRouter = require("./routes/lunchRoutes");
 const authRouter = require("./routes/authRoutes");
+const dinnerRouter = require("./routes/dinnerRoutes");
+
 require("./models/dBase");
 
 require("dotenv").config();
@@ -25,6 +29,7 @@ app.use(cors());
 
 app.use("/auth", authRouter);
 app.use("/lunch", lunchRouter);
+app.use("/dinner", dinnerRouter);
 
 app.get("/", (req, res) => {
     res.send("Server is working!");
@@ -51,6 +56,30 @@ cron.schedule("1 9 * * *", async () => {
         console.log(`[CRON] No response entries added for ${today}`);
     } catch (err) {
         console.error("[CRON ERROR]", err);
+    }
+});
+
+// CRON JOB — Dinner no response at 4:01 PM IST
+cron.schedule("1 16 * * *", async () => {
+    try {
+        const today = dayjs().tz("Asia/Kolkata").format("YYYY-MM-DD");
+        const users = await User.find({}, "_id name email");
+
+        for (const user of users) {
+            const existing = await Dinner.findOne({ userId: user._id, date: today });
+            if (!existing) {
+                await Dinner.create({
+                    userId: user._id,
+                    name: user.name,
+                    email: user.email,
+                    date: today,
+                    status: "no response"
+                });
+            }
+        }
+        console.log(`[CRON] Dinner no response entries added for ${today}`);
+    } catch (err) {
+        console.error("[CRON ERROR - Dinner]", err);
     }
 });
 

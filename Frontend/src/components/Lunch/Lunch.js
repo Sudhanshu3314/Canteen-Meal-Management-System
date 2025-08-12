@@ -110,7 +110,9 @@ const Lunch = () => {
                     <p className="text-red-500 font-bold text-sm sm:text-base">
                         For {targetDate}
                     </p>
-
+                    <p className="text-gray-500 font-semibold text-xs sm:text-base">
+                        Lunch attendance closes at 9:00 AM every day
+                    </p>
                 </div>
 
                 {/* Profile Info */}
