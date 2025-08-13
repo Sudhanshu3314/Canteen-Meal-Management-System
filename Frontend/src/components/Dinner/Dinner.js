@@ -15,6 +15,7 @@ const Dinner = () => {
     const [attendance, setAttendance] = useState(null);
     const [profile, setProfile] = useState(null);
     const [targetDate, setTargetDate] = useState("");
+    const [isMounted, setIsMounted] = useState(false);
 
     // Decide date for attendance
     useEffect(() => {
@@ -23,16 +24,20 @@ const Dinner = () => {
             let dateForAttendance = now.hour() >= 16 ? now.add(1, "day") : now; // cutoff 4 PM
             setTargetDate(dateForAttendance.format("YYYY-MM-DD"));
         };
-
         updateDateAndCutoff();
         const interval = setInterval(updateDateAndCutoff, 60000);
         return () => clearInterval(interval);
     }, []);
 
+    // Animation mount effect
+    useEffect(() => {
+        setIsMounted(true);
+        return () => setIsMounted(false);
+    }, []);
+
     // Fetch profile + attendance
     useEffect(() => {
         if (!user?.token || !targetDate) return;
-
         const fetchData = async () => {
             setLoading(true);
             try {
@@ -55,7 +60,6 @@ const Dinner = () => {
                 setLoading(false);
             }
         };
-
         fetchData();
     }, [user, targetDate]);
 
@@ -70,7 +74,6 @@ const Dinner = () => {
                 },
                 body: JSON.stringify({ status, date: targetDate })
             });
-
             const data = await res.json();
             if (data.success) {
                 message.success(data.message);
@@ -88,88 +91,215 @@ const Dinner = () => {
 
     if (loading) {
         return (
-            <div className="flex flex-col justify-center items-center h-screen bg-gray-50 px-4">
-                <Spin size="large" />
-                <p className="mt-4 text-gray-600 text-lg text-center">Loading dinner attendance...</p>
+            <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 p-4">
+                <div className="bg-white rounded-2xl p-8 shadow-xl max-w-sm w-full">
+                    <div className="flex flex-col items-center justify-center">
+                        <div className="relative mb-6">
+                            <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center">
+                                <Spin size="large" />
+                            </div>
+                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white animate-bounce">
+                                🍽️
+                            </div>
+                        </div>
+                        <p className="mt-4 text-indigo-700 text-lg font-medium animate-pulse">Loading your Dinner attendance...</p>
+                        <div className="mt-4 flex space-x-1">
+                            <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            <div className="w-2 h-2 bg-indigo-600 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-teal-100 via-violet-100 to-red-100 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-            <div className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-lg p-6 sm:p-8 bg-gradient-to-b from-[rgba(255,200,129,0.22)] via-white to-[rgba(142,255,131,0.22)]">
-
-                {/* Header */}
-                <div className="text-center mb-6 sm:mb-8">
-                    <div className="bg-indigo-500 text-white rounded-full p-3 sm:p-4 inline-flex items-center justify-center shadow-md mb-3 sm:mb-4">
-                        <UserOutlined className="text-2xl sm:text-3xl" />
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+            <div className={`w-full max-w-lg mx-auto bg-white rounded-3xl shadow-xl overflow-hidden transform transition-all duration-700 hover:shadow-2xl ${isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'}`}>
+                {/* Decorative Header with dinner theme */}
+                <div className="h-16 bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-center relative overflow-hidden">
+                    <div className="absolute inset-0 flex">
+                        {[...Array(20)].map((_, i) => (
+                            <div key={i} className="h-full w-16 bg-white opacity-10" style={{ transform: `skewX(${i * 5}deg)` }}></div>
+                        ))}
                     </div>
-                    <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-1">
-                        Dinner Attendance
-                    </h1>
-                    <p className="text-red-500 font-bold text-lg sm:text-base">
-                        For {targetDate}
-                    </p>
-                    <p className="text-gray-500 font-semibold text-xs sm:text-base">
-                        Dinner attendance closes at 4:00 PM every day
-                    </p>
+                    <div className="relative z-10 flex items-center space-x-4">
+                        <div className="text-4xl animate-bounce">🍽️</div>
+                        <h1 className="text-2xl font-bold text-white">Dinner Attendance</h1>
+                        <div className="text-4xl animate-bounce" style={{ animationDelay: '0.5s' }}>🍷</div>
+                    </div>
                 </div>
 
-                {/* Profile Info */}
-                {profile && (
-                    <div className="space-y-3 sm:space-y-4 mb-6">
-                        <div className="p-3 sm:p-4 bg-gray-50 rounded-lg flex items-center gap-3 sm:gap-4 border">
-                            <UserOutlined className="text-xl sm:text-2xl text-indigo-600" />
-                            <div>
-                                <p className="text-xs text-gray-500 uppercase">Full Name</p>
-                                <p className="text-base sm:text-lg font-semibold break-words">{profile.name}</p>
-                            </div>
+                <div className="p-6 sm:p-8 bg-gradient-to-b from-indigo-50 to-white">
+                    {/* Date and time info with dinner theme */}
+                    <div className="text-center mb-8 bg-white rounded-xl p-4 shadow-sm border border-indigo-100 relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 to-purple-400"></div>
+                        <div className="flex items-center justify-center space-x-2 mb-2">
+                            <span className="text-indigo-500">📅</span>
+                            <p className="text-lg font-semibold text-indigo-800">For {targetDate}</p>
                         </div>
-                        <div className="p-3 sm:p-4 bg-gray-50 rounded-lg flex items-center gap-3 sm:gap-4 border">
-                            <MailOutlined className="text-xl sm:text-2xl text-indigo-600" />
-                            <div>
-                                <p className="text-xs text-gray-500 uppercase">Email Address</p>
-                                <p className="text-base sm:text-lg font-semibold break-words">{profile.email}</p>
-                            </div>
+                        <div className="flex items-center justify-center space-x-2">
+                            <span className="text-indigo-500">⏰</span>
+                            <p className="text-indigo-600">Closes at 4:00 PM every day</p>
                         </div>
                     </div>
-                )}
 
-                {/* Attendance Actions */}
-                <div className="text-center">
-                    {attendance?.status && attendance.status !== "no response" ? (
-                        <p className="text-sm sm:text-base">
-                            You already responded:{" "}
-                            <Tag color={attendance.status === "yes" ? "green" : "red"}>
-                                {(attendance.status || "").toUpperCase()}
-                            </Tag>
-                        </p>
-                    ) : (
-                        <div className="flex flex-col gap-4 items-center">
-                            <h1 className="text-base sm:text-lg font-semibold text-red-500 text-center">
-                                You didn’t respond anything ???
-                            </h1>
+                    {/* Profile Info with dinner theme */}
+                    {profile && (
+                        <div className="space-y-4 mb-8">
+                            <div className="bg-white rounded-xl p-4 shadow-sm border border-indigo-100 flex items-center space-x-4 transition-all duration-300 hover:shadow-md hover:border-indigo-300 animate-fade-in-left">
+                                <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                    <UserOutlined className="text-xl" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-indigo-600 uppercase tracking-wider font-bold">Full Name</p>
+                                    <p className="font-medium text-gray-800">{profile.name}</p>
+                                </div>
+                            </div>
 
-                            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center">
-                                <Button
-                                    type="primary"
-                                    className="w-full sm:w-auto px-5 py-2 sm:px-6 sm:py-3 text-base sm:text-lg"
-                                    onClick={() => submitAttendance("yes")}
-                                >
-                                    ✅ Yes, I’ll eat dinner
-                                </Button>
-                                <Button
-                                    danger
-                                    className="w-full sm:w-auto px-5 py-2 sm:px-6 sm:py-3 text-base sm:text-lg"
-                                    onClick={() => submitAttendance("no")}
-                                >
-                                    ❌ No, I’ll skip
-                                </Button>
+                            <div className="bg-white rounded-xl p-4 shadow-sm border border-indigo-100 flex items-center space-x-4 transition-all duration-300 hover:shadow-md hover:border-indigo-300 animate-fade-in-left">
+                                <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                                    <MailOutlined className="text-xl" />
+                                </div>
+                                <div>
+                                    <p className="text-xs text-indigo-600 uppercase tracking-wider font-bold">Email Address</p>
+                                    <p className="font-medium text-gray-800 truncate">{profile.email}</p>
+                                </div>
                             </div>
                         </div>
                     )}
+
+                    {/* Attendance Actions with dinner theme */}
+                    <div className="text-center">
+                        {attendance?.status && attendance.status !== "no response" ? (
+                            <div className="bg-green-50 rounded-xl p-6 border border-green-200 animate-fade-in-up">
+                                <div className="flex items-center justify-center space-x-2 mb-3">
+                                    <span className="text-green-500 text-2xl">✅</span>
+                                    <p className="text-lg font-medium text-green-800">Your response has been recorded</p>
+                                </div>
+                                <p className="text-green-700">
+                                    You chose:{" "}
+                                    <Tag color={attendance.status === "yes" ? "green" : "red"} className="text-sm px-3 py-1">
+                                        {attendance.status === "yes" ? "Having Dinner" : "Skipping Dinner"}
+                                    </Tag>
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="space-y-6">
+                                <div className="bg-indigo-50 rounded-xl p-4 border border-indigo-200 animate-fade-in-up">
+                                    <div className="flex items-center justify-center space-x-2">
+                                        <span className="text-indigo-500 text-xl">⚠️</span>
+                                        <h3 className="text-lg font-bold text-indigo-700">Time to decide!</h3>
+                                    </div>
+                                    <p className="text-indigo-600 mt-2">Will you be joining us for dinner today?</p>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <Button
+                                        className="!h-24 !w-full sm:!w-56 !py-4 !px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white border-0 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex flex-col items-center justify-center animate-fade-in-left group relative overflow-hidden"
+                                        onClick={() => submitAttendance("yes")}
+                                    >
+                                        {/* Decorative shine effect */}
+                                        <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-r from-white/30 to-transparent"></div>
+
+                                        {/* Emoji with enhanced styling */}
+                                        <div className="relative mb-2">
+                                            <span className="text-3xl transition-transform duration-300 group-hover:scale-110 drop-shadow-lg">🍽️</span>
+                                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-yellow-300 rounded-full flex items-center justify-center">
+                                                <span className="text-xs">✓</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Text with enhanced styling */}
+                                        <span className="font-bold text-base sm:text-lg transition-all duration-300 drop-shadow-md">Yes, I'm hungry!</span>
+
+                                        {/* Decorative elements */}
+                                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-white/20"></div>
+                                        <div className="absolute bottom-2 left-2 w-4 h-4 rounded-full bg-white/20"></div>
+
+                                        {/* Hover overlay */}
+                                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+
+                                        {/* Animated border */}
+                                        <div className="absolute inset-0 rounded-2xl border-2 border-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </Button>
+
+                                    <Button
+                                        className="!h-24 !w-full sm:!w-56 !py-4 !px-6 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-amber-500 text-white border-0 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex flex-col items-center justify-center animate-fade-in-right group relative overflow-hidden"
+                                        onClick={() => submitAttendance("no")}
+                                    >
+                                        {/* Decorative shine effect */}
+                                        <div className="absolute top-0 left-0 w-full h-1/3 bg-gradient-to-r from-white/30 to-transparent"></div>
+
+                                        {/* Emoji with enhanced styling */}
+                                        <div className="relative mb-2">
+                                            <span className="text-3xl transition-transform duration-300 group-hover:scale-110 drop-shadow-lg">🚫</span>
+                                            <div className="absolute -top-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center">
+                                                <span className="text-xs text-rose-600">✗</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Text with enhanced styling */}
+                                        <span className="font-bold text-base sm:text-lg transition-all duration-300 drop-shadow-md">No, thanks!</span>
+
+                                        {/* Decorative elements */}
+                                        <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-white/20"></div>
+                                        <div className="absolute bottom-2 left-2 w-4 h-4 rounded-full bg-white/20"></div>
+
+                                        {/* Hover overlay */}
+                                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-30 transition-opacity duration-300"></div>
+
+                                        {/* Animated border */}
+                                        <div className="absolute inset-0 rounded-2xl border-2 border-white/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Decorative Footer with dinner theme */}
+                <div className="h-16 bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-center relative overflow-hidden">
+                    <div className="absolute inset-0 flex">
+                        {[...Array(20)].map((_, i) => (
+                            <div key={i} className="h-full w-16 bg-white opacity-10" style={{ transform: `skewX(${i * 5}deg)` }}></div>
+                        ))}
+                    </div>
+                    <div className="relative z-10 flex items-center space-x-2">
+                        <span className="text-white text-2xl animate-pulse">🍲</span>
+                        <span className="text-white text-2xl animate-pulse" style={{ animationDelay: '0.3s' }}>🥘</span>
+                        <span className="text-white text-2xl animate-pulse" style={{ animationDelay: '0.6s' }}>🍝</span>
+                    </div>
                 </div>
             </div>
+
+            {/* Custom CSS for animations */}
+            <style jsx="true">{`
+                @keyframes fade-in-left {
+                    from { opacity: 0; transform: translateX(-20px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+                .animate-fade-in-left {
+                    animation: fade-in-left 0.8s ease-out;
+                }
+                
+                @keyframes fade-in-right {
+                    from { opacity: 0; transform: translateX(20px); }
+                    to { opacity: 1; transform: translateX(0); }
+                }
+                .animate-fade-in-right {
+                    animation: fade-in-right 0.8s ease-out;
+                }
+                
+                @keyframes fade-in-up {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .animate-fade-in-up {
+                    animation: fade-in-up 0.8s ease-out;
+                }
+            `}</style>
         </div>
     );
 };

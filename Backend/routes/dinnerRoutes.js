@@ -9,5 +9,5 @@ const {
 
 router.post("/", verifyToken, checkBeforeCutoff, postDinnerAttendance);
 router.get("/", verifyToken, getDinnerAttendance);
-
 module.exports = router;
+

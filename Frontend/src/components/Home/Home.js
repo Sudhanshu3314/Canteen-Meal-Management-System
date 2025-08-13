@@ -61,20 +61,12 @@ const Home = () => {
                         </ul>
                     </div>
                 </div>
-
-                {/* Footer Section */}
-                <footer className="mt-16 text-center text-sm text-gray-600">
-                    <p className="tracking-wide">
-                        © {new Date().getFullYear()} <span className="font-semibold text-indigo-700">IGIDR Institute</span> • Dining Services
-                    </p>
-                    <p className="mt-1 text-xs sm:mt-2 sm:text-sm">Nourishing Minds, One Meal at a Time.</p>
-                </footer>
             </div>
 
             {/* Tailwind CSS CDN - IMPORTANT for rendering in a browser environment */}
             <script src="https://cdn.tailwindcss.com"></script>
             {/* Custom CSS for 'Inter' font and animations */}
-            <style>
+            <style jsx="true">
                 {`
           @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
           .font-inter {
