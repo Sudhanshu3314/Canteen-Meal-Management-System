@@ -15,7 +15,6 @@ const Home = () => {
     // Fallback to Monday if today's menu is not found
     const todayMenu = weeklyMenu[day] || weeklyMenu.Monday;
 
-
     return (
         <div jsx="true" className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 font-inter text-gray-800 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-6xl mx-auto">
