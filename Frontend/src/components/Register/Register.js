@@ -68,6 +68,14 @@ const Register = () => {
                                 required: true,
                                 message: "Please enter a valid email address",
                             },
+                            {
+                                validator: (_, value) =>
+                                    value && value.endsWith("@igidr.ac.in")
+                                        ? Promise.resolve()
+                                        : Promise.reject(
+                                            new Error("IGIDR email address required for access")
+                                        ),
+                            },
                         ]}
                     >
                         <Input
@@ -76,6 +84,7 @@ const Register = () => {
                             className="py-2 rounded-lg shadow-sm focus:shadow-md focus:border-indigo-500"
                         />
                     </Form.Item>
+
 
                     <Form.Item
                         name="password"

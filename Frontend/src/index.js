@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorPage from "./components/Error/ErrorPage";
 import VerifyEmail from "./components/Register/VerifyEmail";
 import VerifyInfo from "./components/Register/VerifyInfo";
+import ResetPassword from "./components/Login/ResetPassword";
 
 const appRouter = createBrowserRouter([
     {
@@ -27,6 +28,7 @@ const appRouter = createBrowserRouter([
             { path: "register", element: <Register /> },
             { path: "verify-info", element: <VerifyInfo /> },
             { path: "verify-email/:token", element: <VerifyEmail /> },
+            { path: "reset-password/:token", element: <ResetPassword /> },
             {
                 element: <ProtectedRoute />,
                 children: [

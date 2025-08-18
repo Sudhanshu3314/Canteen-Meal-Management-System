@@ -34,10 +34,25 @@ const Login = () => {
         }
     };
 
-    const onResetFinish = (values) => {
-        console.log("Reset email submitted: ", values);
-        message.success("Password reset link sent to your email!");
-        setIsResetMode(false);
+    const onResetFinish = async (values) => {
+        try {
+            const res = await fetch("http://localhost:8080/auth/request-reset", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: values.reset_email }),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                message.success("Password reset link sent to your email!");
+                setIsResetMode(false);
+            } else {
+                message.error(data.message);
+            }
+        } catch (err) {
+            console.error(err);
+            message.error("Failed to send reset email.");
+        }
     };
 
     return (

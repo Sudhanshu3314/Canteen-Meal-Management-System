@@ -23,11 +23,14 @@ const UserSchema = new Schema({
         type: Boolean,
         default: false
     },
-    verificationToken: String
+    verificationToken: String,
+
+    // 🔹 Reset password fields
+    resetToken: String,
+    resetTokenExpiry: Date
 }, {
     timestamps: true
 });
 
 const UserModel = mongoose.model('User', UserSchema);
-
 module.exports = UserModel;

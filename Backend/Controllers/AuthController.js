@@ -22,7 +22,7 @@ const signup = async (req, res) => {
         const newUser = new UserModel({ name, email, password: hashedPassword, verificationToken });
         await newUser.save();
 
-        await sendVerificationEmail(email, verificationToken);
+        await sendVerificationEmail(email, name,verificationToken);
 
         return res.status(201).json({ message: "Signup successful. Verification email sent.", success: true });
     } catch (err) {
