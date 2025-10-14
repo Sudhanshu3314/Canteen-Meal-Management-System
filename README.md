@@ -230,7 +230,7 @@ Develop a dinner attendance system for students, where each student must submit 
 | Meal Time         | 1:00 PM            | 8:00 PM            |
 | Cutoff Time       | 9:00 AM            | 4:00 PM            |
 | Auto Reset Time   | 9:00 AM daily      | 4:00 PM daily      |
-| Submission Window | Midnight – 9:00 AM | Midnight – 4:00 PM |
+| Submission Window | 9:00 AM            | 4:00 PM            |
 
 ---
 
