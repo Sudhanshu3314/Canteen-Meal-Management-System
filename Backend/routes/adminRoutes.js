@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
 const { getDinnerReport } = require("../Controllers/DinnerReportController");
+const {getLunchReport} =require("../Controllers/LunchReportController")
 
 // Get all users (for Admin Dashboard)
 router.get("/users", async (req, res) => {
@@ -16,5 +17,6 @@ router.get("/users", async (req, res) => {
 
 // 🍽️ Dinner report (only for admins, after 4:05 PM)
 router.get("/dinner-report",getDinnerReport);
+router.get("/lunch-report",getLunchReport);
 
 module.exports = router;
