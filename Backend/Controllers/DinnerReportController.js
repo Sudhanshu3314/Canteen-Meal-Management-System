@@ -9,21 +9,28 @@ dayjs.extend(timezone);
 
 exports.getDinnerReport = async (req, res) => {
     try {
-        // ⏰ Use Asia/Kolkata timezone explicitly
+        // ⏰ Use Asia/Kolkata timezone
         const now = dayjs().tz("Asia/Kolkata");
         const hours = now.hour();
         const minutes = now.minute();
+        const today = now.format("YYYY-MM-DD");
 
-        // 🔒 Allow only after 4:05 PM (IST)
-        if (hours < 9 || (hours === 9 && minutes < 5)) {
+        // 🔒 Allow only after 7:00 AM (IST)
+        // But after 6:00 AM next morning, lock again (reset daily)
+        const after435PM = hours > 7 || (hours === 7 && minutes >= 0);
+        const after6AM = hours >= 6;
+
+        // 🧠 Logic:
+        // - From 00:00 → 5:59 AM = show "not available"
+        // - From 6:00 AM → 6:59 AM = show "not available"
+        // - From 7:00 AM → 11:59 PM = show report
+        if (!after435PM) {
             return res.status(400).json({
                 success: false,
-                message: "Dinner report available after 4:05 PM (IST).",
+                message: "Dinner report available after 7:00 AM (IST).",
                 currentServerTime: now.format("HH:mm"),
             });
         }
-
-        const today = now.format("YYYY-MM-DD");
 
         // 🟢 Step 1: Fetch all Active users
         const activeUsers = await User.find({ membershipActive: "Active" }).select(

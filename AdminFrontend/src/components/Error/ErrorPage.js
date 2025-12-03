@@ -20,7 +20,10 @@ const ErrorPage = () => {
     if (isRouteErrorResponse(error)) {
         status = error.status;
         statusText = error.statusText;
-        message = error.data?.message || statusDescriptions[status] || "An unexpected error occurred.";
+        message =
+            error.data?.message ||
+            statusDescriptions[status] ||
+            "An unexpected error occurred.";
     } else if (error instanceof Error) {
         status = 500;
         statusText = "Internal Server Error";
@@ -32,21 +35,33 @@ const ErrorPage = () => {
     }
 
     return (
-        <div jsx="true" className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-orange-50 via-rose-100 to-red-200 text-center px-6">
-            <div className="max-w-xl w-full">
-                <h1 className="text-8xl font-bold text-red-600">{status}</h1>
-                <h2 className="text-3xl font-semibold mt-2 text-gray-800">{statusText}</h2>
-                <p className="text-lg text-gray-600 mt-4">{message}</p>
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-orange-50 via-rose-100 to-red-200 text-center px-4 sm:px-6 lg:px-8 py-8">
+            <div className="w-full max-w-lg sm:max-w-xl md:max-w-2xl">
+                <img
+                    src="https://i.pinimg.com/736x/ec/16/9f/ec169fc7cb49648cc7eace9c1acdd476.jpg"
+                    alt="Error Illustration"
+                    className="w-full max-w-[350px] sm:max-w-[400px] md:max-w-[450px] mx-auto mb-6 rounded-lg shadow-md"
+                />
+                <h1 className="text-6xl sm:text-7xl md:text-8xl font-bold text-red-600">
+                    {status}
+                </h1>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold mt-2 text-gray-800">
+                    {statusText}
+                </h2>
+                <p className="text-base sm:text-lg text-gray-600 mt-4 leading-relaxed px-2 sm:px-4">
+                    {message}
+                </p>
                 <Button
                     type="primary"
                     size="large"
-                    className="mt-6"
-                    onClick={() => window.location.href = "/"}
+                    className="mt-6 !bg-red-500 hover:!bg-red-600 !border-none !rounded-xl !px-6 !py-5 text-white font-medium transition-all duration-300"
+                    onClick={() => (window.location.href = "/")}
                 >
                     Go Back Home
                 </Button>
             </div>
         </div>
     );
-}
-export default ErrorPage
+};
+
+export default ErrorPage;

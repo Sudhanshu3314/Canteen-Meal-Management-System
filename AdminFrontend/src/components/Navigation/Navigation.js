@@ -13,7 +13,7 @@ export default function Navigation() {
         { name: "Home", path: "/home" },
         { name: "Lunch", path: "/lunch" },
         { name: "Dinner", path: "/dinner" },
-        { name: "Report", path: "/report" },
+        { name: "Users", path: "/allusers" },
     ];
 
     const linkClasses = ({ isActive }) =>
@@ -36,7 +36,7 @@ export default function Navigation() {
                         alt="IGIDR Logo"
                         className="w-12 bg-white p-1 shadow-lg"
                     />
-                    <h1 className="text-3xl font-bold text-[#FFD369] tracking-widest">IGIDR - Admin Dashboard</h1>
+                    <h1 className="text-3xl font-bold text-[#FFD369] tracking-widest">IGIDR</h1>
                 </div>
 
                 {/* Desktop Links */}

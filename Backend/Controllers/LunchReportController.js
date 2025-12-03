@@ -13,17 +13,21 @@ exports.getLunchReport = async (req, res) => {
         const now = dayjs().tz("Asia/Kolkata");
         const hours = now.hour();
         const minutes = now.minute();
+        const today = now.format("YYYY-MM-DD");
 
-        // 🔒 Allow only after 9:05 AM (IST)
-        if (hours < 9 || (hours === 9 && minutes < 5)) {
+        // 🕘 Lunch report available after 7:00 AM (IST)
+        // 🌅 After 6:00 AM, it resets to "locked" state each morning
+        const after905AM = hours > 7 || (hours === 7 && minutes >= 0);
+        const after6AM = hours >= 6;
+
+        // 🔒 Before 7:00 AM, show message
+        if (!after905AM) {
             return res.status(400).json({
                 success: false,
-                message: "Lunch report available after 9:05 AM (IST).",
+                message: "Lunch report available after 7:00 AM (IST).",
                 currentServerTime: now.format("HH:mm"),
             });
         }
-
-        const today = now.format("YYYY-MM-DD");
 
         // 🟢 Step 1: Fetch all Active users
         const activeUsers = await User.find({ membershipActive: "Active" }).select(

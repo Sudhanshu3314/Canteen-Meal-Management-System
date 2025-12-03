@@ -9,7 +9,7 @@ import Dinner from "./components/Dinner/Dinner";
 import Home from "./components/Home/Home";
 import { AuthProvider } from "./context/AuthContext";
 import ErrorPage from "./components/Error/ErrorPage";
-import Report from "./components/Report/Report";
+import Report from "./components/Report/Users";
 import ProtectedRoute from "./components/Authentication/ProtectedRoute";
 import Login from "./components/Authentication/Login";
 
@@ -19,16 +19,16 @@ const appRouter = createBrowserRouter([
         element: <App />,
         errorElement: <ErrorPage />,
         children: [
-            { path: "/", element: <Home /> },
-            { path: "/home", element: <Home /> },
             { path: "/login", element: <Login /> },
+            { path: "/", element: <Login /> },
             {
                 element: <ProtectedRoute />, // Protect all routes
                 children: [
                     {
                         element: <Body />,
                         children: [
-                            { path: "/report", element: <Report /> },
+                            { path: "/home", element: <Home /> },
+                            { path: "/allusers", element: <Report /> },
                             { path: "/lunch", element: <Lunch /> },
                             { path: "/dinner", element: <Dinner /> },
                         ],
