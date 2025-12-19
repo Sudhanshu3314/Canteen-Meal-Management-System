@@ -12,6 +12,7 @@ import ErrorPage from "./components/Error/ErrorPage";
 import Report from "./components/Report/Users";
 import ProtectedRoute from "./components/Authentication/ProtectedRoute";
 import Login from "./components/Authentication/Login";
+import MenuManager from "./components/MenuManager/MenuManager";
 
 const appRouter = createBrowserRouter([
     {
@@ -31,6 +32,7 @@ const appRouter = createBrowserRouter([
                             { path: "/allusers", element: <Report /> },
                             { path: "/lunch", element: <Lunch /> },
                             { path: "/dinner", element: <Dinner /> },
+                            { path: "/menu", element: <MenuManager /> },
                         ],
                     },
                 ],

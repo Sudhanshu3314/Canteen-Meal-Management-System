@@ -14,6 +14,7 @@ export default function Navigation() {
         { name: "Lunch", path: "/lunch" },
         { name: "Dinner", path: "/dinner" },
         { name: "Users", path: "/allusers" },
+        { name: "Menu", path: "/menu" },
     ];
 
     const linkClasses = ({ isActive }) =>
@@ -51,7 +52,7 @@ export default function Navigation() {
                         onClick={() => {
                             setIsOpen(false);
                             logout();
-                            navigate("/login");
+                            navigate("/");
                         }} className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-md font-semibold transition-all">
                         Logout
                     </button>
