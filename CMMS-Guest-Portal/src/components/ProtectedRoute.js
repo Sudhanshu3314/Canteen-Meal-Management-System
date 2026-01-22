@@ -1,8 +1,12 @@
 import { Navigate, Outlet } from "react-router";
 import { useAuth } from "../context/AuthContext";
 
-export default function ProtectedRoute() {
-    const { user } = useAuth();
+const ProtectedRoute = () => {
+    const { user, loading } = useAuth();
 
-    return user ? <Outlet /> : <Navigate to="/login" />;
-}
+    if (loading) return null; // or spinner
+
+    return user ? <Outlet /> : <Navigate to="/otp-login" replace />;
+};
+
+export default ProtectedRoute;

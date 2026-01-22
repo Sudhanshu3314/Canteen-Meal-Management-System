@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { message, Button, Spin, Tag } from "antd";
-import { UserOutlined, MailOutlined, ArrowRightOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { message, Button, Tag } from "antd";
+import {
+    UserOutlined,
+    MailOutlined,
+    ArrowRightOutlined,
+    ArrowLeftOutlined,
+    MinusOutlined,
+    PlusOutlined,
+} from "@ant-design/icons";
 import { useAuth } from "../../context/AuthContext";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -20,106 +27,113 @@ const Dinner = () => {
     const [profile, setProfile] = useState(null);
     const [targetDate, setTargetDate] = useState("");
     const [nextDate, setNextDate] = useState("");
-    const [isMounted, setIsMounted] = useState(false);
     const [showNextDay, setShowNextDay] = useState(false);
+    const [personCount, setPersonCount] = useState(1);
 
-    // Determine target date based on 4:30 PM cutoff
-    useEffect(() => {
-        const updateDateAndCutoff = () => {
-            let now = dayjs().tz("Asia/Kolkata");
-            let dateForAttendance =
-                now.hour() > 16 || (now.hour() === 16 && now.minute() >= 30)
-                    ? now.add(1, "day")
-                    : now;
-            setTargetDate(dateForAttendance.format("YYYY-MM-DD"));
-            setNextDate(dateForAttendance.add(1, "day").format("YYYY-MM-DD"));
-        };
-        updateDateAndCutoff();
-        const interval = setInterval(updateDateAndCutoff, 60000);
-        return () => clearInterval(interval);
-    }, []);
+    /* ================= HELPERS ================= */
 
-    useEffect(() => {
-        setIsMounted(true);
-        return () => setIsMounted(false);
-    }, []);
+    const isCutoffPassed = () => {
+        const now = dayjs().tz("Asia/Kolkata");
+        return (
+            now.hour() > 16 ||
+            (now.hour() === 16 && now.minute() >= 30)
+        );
+    };
 
     const handleTokenError = () => {
         message.error("Session expired. Please login again.");
         logout?.();
-        navigate("/login");
+        navigate("/otp-login");
     };
 
-    // Fetch profile and attendance
+    /* ================= DATE LOGIC ================= */
+
     useEffect(() => {
-        if (!user?.token || !targetDate) return;
+        const updateDate = () => {
+            const now = dayjs().tz("Asia/Kolkata");
+            const date = isCutoffPassed() ? now.add(1, "day") : now;
 
-        const fetchAllData = async () => {
-            setLoading(true);
-            try {
-                const resProfile = await fetch(`${process.env.BACKEND_URL}/auth/profile`, {
-                    headers: { Authorization: `Bearer ${user.token}` },
-                });
-                const profileData = await resProfile.json();
-
-                if (profileData.success) {
-                    setProfile(profileData.profile);
-                } else {
-                    if (profileData.message?.toLowerCase().includes("token")) {
-                        handleTokenError();
-                        return;
-                    }
-                    message.error(profileData.message);
-                }
-
-                await fetchAttendance();
-            } catch (err) {
-                console.error(err);
-                message.error("Error loading dinner data.");
-            } finally {
-                setLoading(false);
-            }
+            setTargetDate(date.format("YYYY-MM-DD"));
+            setNextDate(date.add(1, "day").format("YYYY-MM-DD"));
         };
 
-        fetchAllData();
-    }, [user, targetDate, showNextDay]);
+        updateDate();
+        const i = setInterval(updateDate, 60000);
+        return () => clearInterval(i);
+    }, []);
+
+    /* ================= DATA LOAD ================= */
+
+    useEffect(() => {
+        if (!user?.token || !targetDate) return;
+        loadData();
+    }, [targetDate, showNextDay]);
+
+    const loadData = async () => {
+        setLoading(true);
+
+        try {
+            const resProfile = await fetch(
+                `${process.env.BACKEND_URL}/auth/profile`,
+                { headers: { Authorization: `Bearer ${user.token}` } }
+            );
+            const profileData = await resProfile.json();
+
+            if (profileData.success) setProfile(profileData.profile);
+            else return handleTokenError();
+
+            await fetchAttendance();
+        } catch {
+            message.error("Error loading dinner data.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const fetchAttendance = async () => {
-        if (!user?.token) return;
         try {
-            const selectedDate = showNextDay ? nextDate : targetDate;
-            const res = await fetch(`${process.env.BACKEND_URL}/dinner?date=${selectedDate}`, {
-                headers: { Authorization: `Bearer ${user.token}` },
-            });
+            const date = showNextDay ? nextDate : targetDate;
+            const res = await fetch(
+                `${process.env.BACKEND_URL}/dinner?date=${date}`,
+                { headers: { Authorization: `Bearer ${user.token}` } }
+            );
             const data = await res.json();
 
-            if (data.message?.toLowerCase().includes("token")) {
+            if (data?.message?.toLowerCase().includes("token")) {
                 handleTokenError();
                 return;
             }
 
             setAttendance(data || {});
-        } catch (err) {
-            console.error(err);
+            setPersonCount(data?.count || 1);
+        } catch {
             message.error("Error loading dinner attendance.");
         }
     };
 
+    /* ================= SUBMIT / UPDATE ================= */
+
     const submitAttendance = async (status) => {
         try {
             setLoading(true);
-            const selectedDate = showNextDay ? nextDate : targetDate;
+            const date = showNextDay ? nextDate : targetDate;
+
             const res = await fetch(`${process.env.BACKEND_URL}/dinner`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${user.token}`,
                 },
-                body: JSON.stringify({ status, date: selectedDate }),
+                body: JSON.stringify({
+                    status,
+                    date,
+                    count: status === "yes" ? personCount : 0,
+                }),
             });
+
             const data = await res.json();
 
-            if (data.message?.toLowerCase().includes("token")) {
+            if (data?.message?.toLowerCase().includes("token")) {
                 handleTokenError();
                 return;
             }
@@ -130,84 +144,181 @@ const Dinner = () => {
             } else {
                 message.error(data.message);
             }
-        } catch (err) {
-            console.error(err);
+        } catch {
             message.error("Error submitting dinner attendance.");
         } finally {
             setLoading(false);
         }
     };
 
-    const AttendanceSection = ({ date, attendance }) => {
+    const updateGuestCount = async (count) => {
+        try {
+            setLoading(true);
+            const date = showNextDay ? nextDate : targetDate;
+
+            const res = await fetch(`${process.env.BACKEND_URL}/dinner`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${user.token}`,
+                },
+                body: JSON.stringify({
+                    status: "yes",
+                    date,
+                    count,
+                }),
+            });
+
+            const data = await res.json();
+
+            if (data.success) {
+                message.success(
+                    count === 0
+                        ? "Guest count removed successfully"
+                        : "Guest count updated successfully"
+                );
+                await fetchAttendance();
+            } else {
+                message.error(data.message);
+            }
+        } catch {
+            message.error("Error updating guest count.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    /* ================= UI ================= */
+
+    const AttendanceSection = ({ date }) => {
         const formattedDate = dayjs(date).format("dddd, MMMM D YYYY");
+
         return (
-            <div className="text-center">
-                <div className="mb-6 bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-indigo-100 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-400 to-purple-400"></div>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 mb-2">
-                        <span className="text-indigo-500 text-xl sm:text-2xl">📅</span>
-                        <p className="text-lg sm:text-2xl font-bold text-indigo-800 break-words">
-                            {formattedDate}
-                        </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 text-sm sm:text-base">
-                        <span className="text-indigo-500 text-lg sm:text-xl">⏰</span>
-                        <p className="text-indigo-600">Closes at {formattedDate}, 4:30 PM</p>
-                    </div>
+            <div className="text-center space-y-6">
+                {/* DATE CARD */}
+                <div className="bg-white rounded-xl p-4 shadow border border-indigo-200">
+                    <p className="text-xl sm:text-2xl font-bold text-indigo-800">
+                        📅 {formattedDate}
+                    </p>
+                    <p className="text-indigo-600 text-sm mt-1 sm:mt-2">
+                        Closes at 4:30 PM, {formattedDate}
+                    </p>
                 </div>
 
-                {attendance?.status && attendance.status !== "no response" ? (
-                    <div className="bg-green-50 rounded-xl p-4 sm:p-6 border border-green-200 animate-fade-in-up">
-                        <p className="text-green-700 text-base sm:text-lg font-medium">
-                            Your response for {formattedDate} has been recorded
+                {attendance?.status ? (
+                    <motion.div
+                        layout
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        className="bg-green-50 border border-green-200 rounded-xl p-4 space-y-4"
+                    >
+                        <p className="text-green-800 font-semibold">
+                            Your response is recorded
                         </p>
-                        <p className="text-green-700 mt-2">
-                            You chose:{" "}
-                            <Tag color={attendance.status === "yes" ? "green" : "red"} className="text-sm sm:text-base px-3 py-1">
-                                {attendance.status === "yes" ? "Having Dinner" : "Skipping Dinner"}
-                            </Tag>
-                        </p>
-                    </div>
+
+                        {/* BIG STATUS TAG */}
+                        <Tag
+                            color={attendance.status === "yes" ? "green" : "red"}
+                            className="px-5 py-2"
+                        >
+                            {attendance.status === "yes" ? (
+                                <span className="font-black text-2xl tracking-wide">
+                                    🍽️ Having Dinner
+                                </span>
+                            ) : (
+                                <span className="font-black text-2xl tracking-wide">
+                                    🚫 Skipping Dinner
+                                </span>
+                            )}
+                        </Tag>
+
+                        {attendance.status === "yes" && (
+                            <>
+                                {/* BIG PERSON COUNT */}
+                                <p className="text-green-800 text-xl">
+                                    <span className="font-bold mr-2">Persons:</span>
+                                    <Tag
+                                        color="blue"
+                                        className="px-4 py-2 font-black text-5xl"
+                                    >
+                                        {attendance.count}
+                                    </Tag>
+                                </p>
+
+                                {!isCutoffPassed() ? (
+                                    <div className="flex flex-col sm:flex-row justify-center gap-3">
+                                        <Button
+                                            icon={<PlusOutlined />}
+                                            onClick={() => setAttendance(null)}
+                                        >
+                                            Edit Guests
+                                        </Button>
+                                        <Button
+                                            danger
+                                            icon={<MinusOutlined />}
+                                            loading={loading}
+                                            onClick={() => updateGuestCount(0)}
+                                        >
+                                            Delete Guests
+                                        </Button>
+                                    </div>
+                                ) : (
+                                    <p className="text-xs text-gray-500">
+                                        Guest count cannot be modified after 4:30 PM
+                                    </p>
+                                )}
+                            </>
+                        )}
+                    </motion.div>
                 ) : (
-                    <div className="space-y-6">
-                        <div className="bg-indigo-50 rounded-xl p-4 sm:p-6 border border-indigo-200 animate-fade-in-up">
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
-                                <span className="text-indigo-500 text-xl sm:text-2xl">⚠️</span>
-                                <h3 className="text-base sm:text-lg font-bold text-indigo-700">
-                                    Time to decide!
-                                </h3>
-                            </div>
-                            <p className="text-indigo-600 mt-2 text-sm sm:text-base">
-                                Will you be joining us for dinner on <br />
-                                <b>{formattedDate}</b>?
+                    <div className="space-y-4">
+                        {/* GUEST SELECTOR */}
+                        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+                            <p className="font-bold text-indigo-700 mb-3">
+                                Number of Guests
                             </p>
+
+                            <div className="flex justify-center items-center gap-4">
+                                <Button
+                                    icon={<MinusOutlined />}
+                                    disabled={personCount <= 1}
+                                    onClick={() => setPersonCount(c => c - 1)}
+                                />
+
+                                <motion.span
+                                    key={personCount}
+                                    initial={{ scale: 0.8 }}
+                                    animate={{ scale: 1 }}
+                                    className="text-2xl font-bold text-indigo-800"
+                                >
+                                    {personCount}
+                                </motion.span>
+
+                                <Button
+                                    icon={<PlusOutlined />}
+                                    disabled={personCount >= 20}
+                                    onClick={() => setPersonCount(c => c + 1)}
+                                />
+                            </div>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        {/* ACTION BUTTONS */}
+                        <div className="grid grid-cols-2 gap-4 sm:gap-6">
                             <Button
-                                className="!h-24 !w-full sm:!w-56 !py-4 !px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white border-0 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex flex-col items-center justify-center animate-fade-in-left group"
+                                className="h-20 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-lg font-bold sm:text-xl"
                                 onClick={() => submitAttendance("yes")}
                                 loading={loading}
                             >
-                                <span className="text-2xl sm:text-3xl mb-2 transition-transform duration-300 group-hover:scale-110">
-                                    🍽️
-                                </span>
-                                <span className="font-bold text-sm sm:text-lg transition-all duration-300">
-                                    Yes, I'm hungry!
-                                </span>
+                                🍽️ Yes
                             </Button>
 
                             <Button
-                                className="!h-24 !w-full sm:!w-56 !py-4 !px-6 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-amber-500 text-white border-0 shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex flex-col items-center justify-center animate-fade-in-right group"
+                                className="h-20 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white text-lg font-bold sm:text-xl"
                                 onClick={() => submitAttendance("no")}
                                 loading={loading}
                             >
-                                <span className="text-2xl sm:text-3xl mb-2 transition-transform duration-300 group-hover:scale-110">
-                                    🚫
-                                </span>
-                                <span className="font-bold text-sm sm:text-lg transition-all duration-300">
-                                    No, thanks!
-                                </span>
+                                🚫 No
                             </Button>
                         </div>
                     </div>
@@ -216,124 +327,89 @@ const Dinner = () => {
         );
     };
 
-    if (loading) {
-        return (
-            <div className="flex flex-col justify-center items-center min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 p-4">
-                <Spin size="large" />
-                <p className="mt-4 text-indigo-700 text-base sm:text-lg font-medium animate-pulse text-center">
-                    Loading your Dinner attendance...
-                </p>
-            </div>
-        );
-    }
 
     const selectedDate = showNextDay ? nextDate : targetDate;
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 flex items-center justify-center p-3 sm:p-6 lg:p-8">
-            <div className={`w-full max-w-sm sm:max-w-lg mx-auto bg-white rounded-3xl shadow-xl overflow-hidden transform transition-all duration-700 hover:shadow-2xl ${isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-
-                {/* Header */}
-                <div className="h-14 sm:h-16 bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-center relative overflow-hidden">
-                    <div className="relative z-10 flex items-center space-x-2 sm:space-x-4">
-                        <div className="text-2xl sm:text-4xl animate-bounce">🍽️</div>
-                        <h1 className="text-lg sm:text-2xl font-bold text-white">Dinner Attendance</h1>
-                        <div className="text-2xl sm:text-4xl animate-bounce" style={{ animationDelay: '0.5s' }}>🍷</div>
-                    </div>
+        <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-blue-50 flex justify-center items-center p-4">
+            <div className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden">
+                <div className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white text-center py-4 text-2xl font-bold">
+                    🍽️ Dinner Attendance
                 </div>
 
-                {/* Body */}
-                <div className="p-4 sm:p-8 bg-gradient-to-b from-indigo-50 to-white">
-                    {profile && (
-                        <div className="space-y-4 mb-6 sm:mb-8">
-                            <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-indigo-100 flex items-center space-x-3 sm:space-x-4 animate-fade-in-left">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                                    <UserOutlined className="text-lg sm:text-xl" />
+                <div className="p-6 space-y-6">
+                    {user && (
+                        <motion.div
+                            layout
+                            className="flex flex-col gap-4 p-4
+            bg-gradient-to-r from-indigo-50 to-purple-50
+            rounded-2xl shadow-lg border border-indigo-200
+            hover:shadow-xl transition-shadow duration-300"
+                        >
+                            {/* Name */}
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14
+                bg-indigo-100 text-indigo-700 rounded-full shadow-inner">
+                                    <UserOutlined className="text-xl sm:text-2xl" />
                                 </div>
-                                <div>
-                                    <p className="text-[10px] sm:text-xs text-indigo-600 uppercase tracking-wider font-bold">Full Name</p>
-                                    <p className="font-medium text-sm sm:text-base text-gray-800">{profile.name}</p>
+
+                                <div className="flex flex-col">
+                                    <span className="text-sm sm:text-base font-semibold text-gray-800 truncate">
+                                        {user.name}
+                                    </span>
+                                    <span className="text-xs sm:text-sm text-gray-500">
+                                        Full Name
+                                    </span>
                                 </div>
                             </div>
-                            <div className="bg-white rounded-xl p-3 sm:p-4 shadow-sm border border-indigo-100 flex items-center space-x-3 sm:space-x-4 animate-fade-in-left">
-                                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+
+                            {/* Email */}
+                            <div className="flex items-center gap-3">
+                                <div className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14
+                bg-indigo-100 text-indigo-700 rounded-full shadow-inner">
                                     <MailOutlined className="text-lg sm:text-xl" />
                                 </div>
-                                <div>
-                                    <p className="text-[10px] sm:text-xs text-indigo-600 uppercase tracking-wider font-bold">Email Address</p>
-                                    <p className="font-medium text-sm sm:text-base text-gray-800 truncate max-w-[160px] sm:max-w-none">{profile.email}</p>
+
+                                <div className="flex flex-col">
+                                    <span className="text-sm sm:text-base text-gray-700 truncate">
+                                        {user.email}
+                                    </span>
+                                    <span className="text-xs sm:text-sm text-gray-500">
+                                        IGIDR Email
+                                    </span>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     )}
 
-                    {/* Attendance Section */}
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={selectedDate}
                             initial={{ opacity: 0, x: showNextDay ? 80 : -80 }}
                             animate={{ opacity: 1, x: 0 }}
                             exit={{ opacity: 0, x: showNextDay ? -80 : 80 }}
-                            transition={{ duration: 0.4, ease: "easeInOut" }}
                         >
-                            <AttendanceSection date={selectedDate} attendance={attendance} />
+                            <AttendanceSection date={selectedDate} />
                         </motion.div>
                     </AnimatePresence>
 
-                    {/* Toggle Button */}
-                    <div className="flex justify-center mt-8 sm:mt-10">
-                        <motion.button
-                            whileHover={{ scale: 1.08, boxShadow: "0px 0px 20px rgba(128, 0, 128, 0.5)" }}
-                            whileTap={{ scale: 0.95 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 15 }}
-                            onClick={() => setShowNextDay((prev) => !prev)}
-                            className="relative flex items-center justify-center gap-2 sm:gap-3 px-6 sm:px-8 py-2 sm:py-3 rounded-2xl text-white font-semibold overflow-hidden shadow-lg bg-gradient-to-r from-indigo-500 via-purple-600 to-blue-500 focus:outline-none text-sm sm:text-base"
-                        >
-                            {showNextDay ? (
-                                <>
-                                    <ArrowLeftOutlined className="text-base sm:text-2xl" />
-                                    <span className="relative z-10 font-bold text-sm sm:text-xl">Previous Day</span>
-                                </>
+                    <Button
+                        type="primary"
+                        block
+                        size="large"
+                        icon={
+                            showNextDay ? (
+                                <ArrowLeftOutlined />
                             ) : (
-                                <>
-                                    <span className="relative z-10 font-bold text-sm sm:text-xl">Next Day</span>
-                                    <ArrowRightOutlined className="text-base sm:text-2xl" />
-                                </>
-                            )}
-                        </motion.button>
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <div className="h-14 sm:h-16 bg-gradient-to-r from-indigo-600 to-purple-700 flex items-center justify-center relative overflow-hidden">
-                    <div className="relative z-10 flex items-center space-x-2 sm:space-x-3">
-                        <span className="text-white text-lg sm:text-2xl animate-pulse">🍲</span>
-                        <span className="text-white text-lg sm:text-2xl animate-pulse" style={{ animationDelay: '0.3s' }}>🥘</span>
-                        <span className="text-white text-lg sm:text-2xl animate-pulse" style={{ animationDelay: '0.6s' }}>🍝</span>
-                    </div>
+                                <ArrowRightOutlined />
+                            )
+                        }
+                        onClick={() => setShowNextDay((p) => !p)}
+                    >
+                        {showNextDay ? "Previous Day" : "Next Day"}
+                    </Button>
                 </div>
             </div>
-
-            {/* Animations */}
-            <style jsx="true">{`
-                @keyframes fade-in-left {
-                    from { opacity: 0; transform: translateX(-20px); }
-                    to { opacity: 1; transform: translateX(0); }
-                }
-                .animate-fade-in-left { animation: fade-in-left 0.8s ease-out; }
-
-                @keyframes fade-in-right {
-                    from { opacity: 0; transform: translateX(20px); }
-                    to { opacity: 1; transform: translateX(0); }
-                }
-                .animate-fade-in-right { animation: fade-in-right 0.8s ease-out; }
-
-                @keyframes fade-in-up {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-                .animate-fade-in-up { animation: fade-in-up 0.8s ease-out; }
-            `}</style>
         </div>
     );
 };

@@ -1,43 +1,37 @@
 import ReactDOM from "react-dom/client";
-import App from "./App";
-import "@ant-design/v5-patch-for-react-19";
 import { createBrowserRouter, RouterProvider } from "react-router";
+import "@ant-design/v5-patch-for-react-19";
 
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
+import App from "./App";
 import Body from "./components/Body";
+import Home from "./components/Home/Home";
 import Profile from "./components/Profile/Profile";
 import Lunch from "./components/Lunch/Lunch";
 import Dinner from "./components/Dinner/Dinner";
-import Home from "./components/Home/Home";
-import { AuthProvider } from "./context/AuthContext";
+import OtpLogin from "./components/OtpLogin/OtpLogin";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ErrorPage from "./components/Error/ErrorPage";
-import VerifyEmail from "./components/Register/VerifyEmail";
-import VerifyInfo from "./components/Register/VerifyInfo";
-import ResetPassword from "./components/Login/ResetPassword";
+import { AuthProvider } from "./context/AuthContext";
 
-const appRouter = createBrowserRouter([
+const router = createBrowserRouter([
     {
         path: "/",
         element: <App />,
         errorElement: <ErrorPage />,
         children: [
-            { index: true, element: <Login /> },
-            { path: "login", element: <Login /> },
-            { path: "register", element: <Register /> },
-            { path: "verify-info", element: <VerifyInfo /> },
-            { path: "verify-email/:token", element: <VerifyEmail /> },
-            { path: "reset-password/:token", element: <ResetPassword /> },
+            // 🔓 PUBLIC
+            { index: true, element: <OtpLogin /> },
+            { path: "otp-login", element: <OtpLogin /> },
+
+            // 🔐 PROTECTED (MIDDLEWARE)
             {
-                element: <ProtectedRoute />,
+                element: <ProtectedRoute />,   // ✅ ENABLED
                 children: [
                     {
-                        path: "/",
-                        element: <Body />,
+                        element: <Body />,         // layout
                         children: [
-                            { path: "/home", element: <Home /> },
-                            { path: "profile", element: <Profile /> },
+                            { path: "home", element: <Home /> },
+                            // { path: "profile", element: <Profile /> },
                             { path: "lunch", element: <Lunch /> },
                             { path: "dinner", element: <Dinner /> },
                         ],
@@ -48,9 +42,9 @@ const appRouter = createBrowserRouter([
     },
 ]);
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
+
+ReactDOM.createRoot(document.getElementById("root")).render(
     <AuthProvider>
-        <RouterProvider router={appRouter} />
+        <RouterProvider router={router} />
     </AuthProvider>
 );

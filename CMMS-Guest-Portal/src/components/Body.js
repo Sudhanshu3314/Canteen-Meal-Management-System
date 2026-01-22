@@ -1,11 +1,7 @@
-import { Outlet } from "react-router"
+import { Outlet } from "react-router";
 
 const Body = () => {
-    return (
-        <div jsx="true">
-            <Outlet /> 
-        </div>
-    )
-}
+    return <Outlet />;
+};
 
-export default Body
+export default Body;

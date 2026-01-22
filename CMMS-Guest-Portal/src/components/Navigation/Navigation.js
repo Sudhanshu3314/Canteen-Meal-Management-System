@@ -11,7 +11,7 @@ export default function Navigation() {
     const { logout } = useAuth();
     const Links = [
         { name: "Menu", path: "/home" },
-        { name: "Profile", path: "/profile" },
+        // { name: "Profile", path: "/profile" },
         { name: "Lunch", path: "/lunch" },
         { name: "Dinner", path: "/dinner" },
     ];
@@ -51,7 +51,7 @@ export default function Navigation() {
                         onClick={() => {
                             setIsOpen(false);
                             logout();
-                            navigate("/login");
+                            navigate("/otp-login");
                         }} className="bg-red-500 cursor-pointer hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-md font-semibold transition-all">
                         Logout
                     </button>
@@ -96,7 +96,7 @@ export default function Navigation() {
                         onClick={() => {
                             setIsOpen(false);
                             logout();
-                            navigate("/login");
+                            navigate("/otp-login");
                         }}
                         className="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg font-semibold shadow-md transition-all duration-300 mt-6"
                     >

@@ -18,105 +18,105 @@ const Profile = () => {
     const handleUnauthorized = () => {
         message.error("Session expired. Please log in again.");
         logout?.();
-        navigate("/login");
+        navigate("/otp-login");
     };
 
-    const fetchProfile = async () => {
-        setLoading(true);
-        try {
-            const res = await fetch(`${process.env.BACKEND_URL}/auth/profile`, {
-                headers: { Authorization: `Bearer ${user.token}` },
-            });
+    // const fetchProfile = async () => {
+    //     setLoading(true);
+    //     try {
+    //         const res = await fetch(`${process.env.BACKEND_URL}/auth/profile`, {
+    //             headers: { Authorization: `Bearer ${user.token}` },
+    //         });
 
-            if (res.status === 401) return handleUnauthorized();
+    //         if (res.status === 401) return handleUnauthorized();
 
-            const data = await res.json();
-            const profile = data?.profile || data;
+    //         const data = await res.json();
+    //         const profile = data?.profile || data;
 
-            setProfileData({
-                name: profile?.name || "",
-                email: profile?.email || "",
-                photo: profile?.profilePhoto || "",
-                membershipActive:
-                    profile?.membershipActive === "Active" ? "Active" : "Inactive",
-            });
-        } catch (err) {
-            console.error("Error fetching profile:", err);
-            message.error("Error fetching profile data");
-        } finally {
-            setLoading(false);
-        }
-    };
+    //         setProfileData({
+    //             name: profile?.name || "",
+    //             email: profile?.email || "",
+    //             photo: profile?.profilePhoto || "",
+    //             membershipActive:
+    //                 profile?.membershipActive === "Active" ? "Active" : "Inactive",
+    //         });
+    //     } catch (err) {
+    //         console.error("Error fetching profile:", err);
+    //         message.error("Error fetching profile data");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
-    const handleMembershipAction = async (action) => {
-        if (!profileData) return;
-        setActionLoading(true);
+    // const handleMembershipAction = async (action) => {
+    //     if (!profileData) return;
+    //     setActionLoading(true);
 
-        try {
-            const res = await fetch(`${process.env.BACKEND_URL}/user/togglemembership`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
-                },
-                body: JSON.stringify({ action }),
-            });
+    //     try {
+    //         const res = await fetch(`${process.env.BACKEND_URL}/user/togglemembership`, {
+    //             method: "POST",
+    //             headers: {
+    //                 "Content-Type": "application/json",
+    //                 Authorization: `Bearer ${user.token}`,
+    //             },
+    //             body: JSON.stringify({ action }),
+    //         });
 
-            if (res.status === 401) return handleUnauthorized();
+    //         if (res.status === 401) return handleUnauthorized();
 
-            const data = await res.json();
-            if (data.success) {
-                message.success(data.message);
-                setProfileData((prev) => ({
-                    ...prev,
-                    membershipActive:
-                        data.membershipActive === "Active" ? "Active" : "Inactive",
-                }));
-            } else {
-                message.error(data.message || "Unable to perform action");
-            }
-        } catch (err) {
-            console.error(err);
-            message.error("Error performing membership action");
-        } finally {
-            setActionLoading(false);
-        }
-    };
+    //         const data = await res.json();
+    //         if (data.success) {
+    //             message.success(data.message);
+    //             setProfileData((prev) => ({
+    //                 ...prev,
+    //                 membershipActive:
+    //                     data.membershipActive === "Active" ? "Active" : "Inactive",
+    //             }));
+    //         } else {
+    //             message.error(data.message || "Unable to perform action");
+    //         }
+    //     } catch (err) {
+    //         console.error(err);
+    //         message.error("Error performing membership action");
+    //     } finally {
+    //         setActionLoading(false);
+    //     }
+    // };
 
-    const handlePhotoUpload = async (file) => {
-        const formData = new FormData();
-        formData.append("photo", file);
+    // const handlePhotoUpload = async (file) => {
+    //     const formData = new FormData();
+    //     formData.append("photo", file);
 
-        try {
-            setUploading(true);
-            const res = await fetch(`${process.env.BACKEND_URL}/user/uploadphoto`, {
-                method: "POST",
-                headers: { Authorization: `Bearer ${user.token}` },
-                body: formData,
-            });
+    //     try {
+    //         setUploading(true);
+    //         const res = await fetch(`${process.env.BACKEND_URL}/user/uploadphoto`, {
+    //             method: "POST",
+    //             headers: { Authorization: `Bearer ${user.token}` },
+    //             body: formData,
+    //         });
 
-            if (res.status === 401) return handleUnauthorized();
+    //         if (res.status === 401) return handleUnauthorized();
 
-            const data = await res.json();
-            if (data.success) {
-                message.success("Profile photo updated!");
-                setProfileData((prev) => ({ ...prev, photo: data.photoUrl }));
-            } else {
-                message.error(data.message || "Upload failed");
-            }
-        } catch (err) {
-            console.error("Upload error:", err);
-            message.error("Error uploading photo");
-        } finally {
-            setUploading(false);
-        }
-    };
+    //         const data = await res.json();
+    //         if (data.success) {
+    //             message.success("Profile photo updated!");
+    //             setProfileData((prev) => ({ ...prev, photo: data.photoUrl }));
+    //         } else {
+    //             message.error(data.message || "Upload failed");
+    //         }
+    //     } catch (err) {
+    //         console.error("Upload error:", err);
+    //         message.error("Error uploading photo");
+    //     } finally {
+    //         setUploading(false);
+    //     }
+    // };
 
-    useEffect(() => {
-        if (user?.token) fetchProfile();
-        setIsMounted(true);
-        return () => setIsMounted(false);
-    }, [user]);
+    // useEffect(() => {
+    //     if (user?.token) fetchProfile();
+    //     setIsMounted(true);
+    //     return () => setIsMounted(false);
+    // }, [user]);
 
 
     // Helper: check if current time is within disabled intervals
@@ -140,14 +140,14 @@ const Profile = () => {
     };
 
     // State to auto-refresh time restriction
-    const [isTimeDisabled, setIsTimeDisabled] = useState(isWithinDisabledTime());
+    // const [isTimeDisabled, setIsTimeDisabled] = useState(isWithinDisabledTime());
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setIsTimeDisabled(isWithinDisabledTime());
-        }, 60 * 1000); // check every 1 minute
-        return () => clearInterval(interval);
-    }, []);
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         setIsTimeDisabled(isWithinDisabledTime());
+    //     }, 60 * 1000); // check every 1 minute
+    //     return () => clearInterval(interval);
+    // }, []);
 
     if (loading || !profileData) {
         return (
@@ -223,20 +223,20 @@ const Profile = () => {
 
                     {/* Membership Buttons */}
                     <div className="flex flex-row gap-4 justify-center mb-4 sm:mb-6 mx-[10px]">
-                        
-                            <Button
-                                loading={actionLoading}
-                                disabled={isActive}
-                                type="primary"
-                                className="!h-10 sm:!h-12 !rounded-2xl !px-4 sm:!px-6 !font-semibold !text-white shadow-lg w-full sm:w-auto text-sm sm:text-base"
-                                style={{
-                                    background: "linear-gradient(135deg, #16a34a, #22c55e, #4ade80)",
-                                    boxShadow: "0 0 20px rgba(34, 197, 94, 0.6)",
-                                }}
-                                onClick={() => handleMembershipAction("activate")}
-                            >
-                                Activate
-                            </Button>
+
+                        <Button
+                            loading={actionLoading}
+                            disabled={isActive}
+                            type="primary"
+                            className="!h-10 sm:!h-12 !rounded-2xl !px-4 sm:!px-6 !font-semibold !text-white shadow-lg w-full sm:w-auto text-sm sm:text-base"
+                            style={{
+                                background: "linear-gradient(135deg, #16a34a, #22c55e, #4ade80)",
+                                boxShadow: "0 0 20px rgba(34, 197, 94, 0.6)",
+                            }}
+                            onClick={() => handleMembershipAction("activate")}
+                        >
+                            Activate
+                        </Button>
 
                         <Tooltip
                             title={
