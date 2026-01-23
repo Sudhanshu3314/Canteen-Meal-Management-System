@@ -8,23 +8,22 @@ import {
     MinusOutlined,
     PlusOutlined,
 } from "@ant-design/icons";
+import { motion, AnimatePresence } from "framer-motion";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { useNavigate } from "react-router";
-import { motion, AnimatePresence } from "framer-motion";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const Dinner = () => {
-    const { user, logout } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(true);
     const [attendance, setAttendance] = useState(null);
-    const [profile, setProfile] = useState(null);
     const [targetDate, setTargetDate] = useState("");
     const [nextDate, setNextDate] = useState("");
     const [showNextDay, setShowNextDay] = useState(false);
@@ -32,18 +31,39 @@ const Dinner = () => {
 
     /* ================= HELPERS ================= */
 
+    // Dinner cutoff → 4:30 PM IST
     const isCutoffPassed = () => {
         const now = dayjs().tz("Asia/Kolkata");
-        return (
-            now.hour() > 16 ||
-            (now.hour() === 16 && now.minute() >= 30)
-        );
+        return now.hour() > 16 || (now.hour() === 16 && now.minute() >= 30);
     };
 
-    const handleTokenError = () => {
-        message.error("Session expired. Please login again.");
-        logout?.();
-        navigate("/otp-login");
+    const fetchWithAuth = async (url, options = {}) => {
+        try {
+            if (!user?.token) throw new Error("No token");
+
+            const fetchOptions = {
+                ...options,
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(options.headers || {}),
+                    Authorization: `Bearer ${user.token}`,
+                },
+            };
+
+            const res = await fetch(url, fetchOptions);
+
+            if (res.status === 401) {
+                message.error("Session expired. Please login again");
+                navigate("/otp-login");
+                return null;
+            }
+
+            return await res.json();
+        } catch (err) {
+            console.error("fetchWithAuth error:", err);
+            message.error("Network error");
+            return null;
+        }
     };
 
     /* ================= DATE LOGIC ================= */
@@ -51,15 +71,17 @@ const Dinner = () => {
     useEffect(() => {
         const updateDate = () => {
             const now = dayjs().tz("Asia/Kolkata");
-            const date = isCutoffPassed() ? now.add(1, "day") : now;
+            const todayOrNext = isCutoffPassed()
+                ? now.add(1, "day")
+                : now;
 
-            setTargetDate(date.format("YYYY-MM-DD"));
-            setNextDate(date.add(1, "day").format("YYYY-MM-DD"));
+            setTargetDate(todayOrNext.format("YYYY-MM-DD"));
+            setNextDate(todayOrNext.add(1, "day").format("YYYY-MM-DD"));
         };
 
         updateDate();
-        const i = setInterval(updateDate, 60000);
-        return () => clearInterval(i);
+        const interval = setInterval(updateDate, 60000);
+        return () => clearInterval(interval);
     }, []);
 
     /* ================= DATA LOAD ================= */
@@ -71,121 +93,79 @@ const Dinner = () => {
 
     const loadData = async () => {
         setLoading(true);
-
-        try {
-            const resProfile = await fetch(
-                `${process.env.BACKEND_URL}/auth/profile`,
-                { headers: { Authorization: `Bearer ${user.token}` } }
-            );
-            const profileData = await resProfile.json();
-
-            if (profileData.success) setProfile(profileData.profile);
-            else return handleTokenError();
-
-            await fetchAttendance();
-        } catch {
-            message.error("Error loading dinner data.");
-        } finally {
-            setLoading(false);
-        }
+        await fetchAttendance();
+        setLoading(false);
     };
 
     const fetchAttendance = async () => {
-        try {
-            const date = showNextDay ? nextDate : targetDate;
-            const res = await fetch(
-                `${process.env.BACKEND_URL}/dinner?date=${date}`,
-                { headers: { Authorization: `Bearer ${user.token}` } }
-            );
-            const data = await res.json();
+        const date = showNextDay ? nextDate : targetDate;
 
-            if (data?.message?.toLowerCase().includes("token")) {
-                handleTokenError();
-                return;
-            }
+        setAttendance(null); // 🔥 Clear previous date data
 
-            setAttendance(data || {});
-            setPersonCount(data?.count || 1);
-        } catch {
-            message.error("Error loading dinner attendance.");
+        const res = await fetchWithAuth(
+            `${process.env.REACT_APP_BACKEND_URL}/dinner?date=${date}`
+        );
+
+        if (res) {
+            setAttendance(res);
+            setPersonCount(res?.count || 1);
         }
     };
 
     /* ================= SUBMIT / UPDATE ================= */
 
     const submitAttendance = async (status) => {
-        try {
-            setLoading(true);
-            const date = showNextDay ? nextDate : targetDate;
+        setLoading(true);
+        const date = showNextDay ? nextDate : targetDate;
 
-            const res = await fetch(`${process.env.BACKEND_URL}/dinner`, {
+        const res = await fetchWithAuth(
+            `${process.env.REACT_APP_BACKEND_URL}/dinner`,
+            {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
-                },
                 body: JSON.stringify({
                     status,
                     date,
                     count: status === "yes" ? personCount : 0,
                 }),
-            });
-
-            const data = await res.json();
-
-            if (data?.message?.toLowerCase().includes("token")) {
-                handleTokenError();
-                return;
             }
+        );
 
-            if (data.success) {
-                message.success(data.message);
-                await fetchAttendance();
-            } else {
-                message.error(data.message);
-            }
-        } catch {
-            message.error("Error submitting dinner attendance.");
-        } finally {
-            setLoading(false);
+        if (res?.success) {
+            message.success(res.message);
+            await fetchAttendance();
+        } else {
+            message.error(res?.message || "Error submitting dinner attendance");
         }
+
+        setLoading(false);
     };
 
     const updateGuestCount = async (count) => {
-        try {
-            setLoading(true);
-            const date = showNextDay ? nextDate : targetDate;
+        setLoading(true);
+        const date = showNextDay ? nextDate : targetDate;
 
-            const res = await fetch(`${process.env.BACKEND_URL}/dinner`, {
+        const res = await fetchWithAuth(
+            `${process.env.REACT_APP_BACKEND_URL}/dinner`,
+            {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${user.token}`,
-                },
                 body: JSON.stringify({
                     status: "yes",
                     date,
                     count,
                 }),
-            });
-
-            const data = await res.json();
-
-            if (data.success) {
-                message.success(
-                    count === 0
-                        ? "Guest count removed successfully"
-                        : "Guest count updated successfully"
-                );
-                await fetchAttendance();
-            } else {
-                message.error(data.message);
             }
-        } catch {
-            message.error("Error updating guest count.");
-        } finally {
-            setLoading(false);
+        );
+
+        if (res?.success) {
+            message.success(
+                count === 0 ? "Guest count removed" : "Guest count updated"
+            );
+            await fetchAttendance();
+        } else {
+            message.error(res?.message || "Error updating guest count");
         }
+
+        setLoading(false);
     };
 
     /* ================= UI ================= */
@@ -195,12 +175,11 @@ const Dinner = () => {
 
         return (
             <div className="text-center space-y-6">
-                {/* DATE CARD */}
                 <div className="bg-white rounded-xl p-4 shadow border border-indigo-200">
                     <p className="text-xl sm:text-2xl font-bold text-indigo-800">
                         📅 {formattedDate}
                     </p>
-                    <p className="text-indigo-600 text-sm mt-1 sm:mt-2">
+                    <p className="text-indigo-600 text-sm mt-1">
                         Closes at 4:30 PM, {formattedDate}
                     </p>
                 </div>
@@ -217,17 +196,16 @@ const Dinner = () => {
                             Your response is recorded
                         </p>
 
-                        {/* BIG STATUS TAG */}
                         <Tag
                             color={attendance.status === "yes" ? "green" : "red"}
                             className="px-5 py-2"
                         >
                             {attendance.status === "yes" ? (
-                                <span className="font-black text-2xl tracking-wide">
+                                <span className="font-black text-2xl">
                                     🍽️ Having Dinner
                                 </span>
                             ) : (
-                                <span className="font-black text-2xl tracking-wide">
+                                <span className="font-black text-2xl">
                                     🚫 Skipping Dinner
                                 </span>
                             )}
@@ -235,7 +213,6 @@ const Dinner = () => {
 
                         {attendance.status === "yes" && (
                             <>
-                                {/* BIG PERSON COUNT */}
                                 <p className="text-green-800 text-xl">
                                     <span className="font-bold mr-2">Persons:</span>
                                     <Tag
@@ -247,7 +224,7 @@ const Dinner = () => {
                                 </p>
 
                                 {!isCutoffPassed() ? (
-                                    <div className="flex flex-col sm:flex-row justify-center gap-3">
+                                    <div className="flex justify-center gap-3">
                                         <Button
                                             icon={<PlusOutlined />}
                                             onClick={() => setAttendance(null)}
@@ -273,7 +250,6 @@ const Dinner = () => {
                     </motion.div>
                 ) : (
                     <div className="space-y-4">
-                        {/* GUEST SELECTOR */}
                         <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
                             <p className="font-bold text-indigo-700 mb-3">
                                 Number of Guests
@@ -303,10 +279,9 @@ const Dinner = () => {
                             </div>
                         </div>
 
-                        {/* ACTION BUTTONS */}
-                        <div className="grid grid-cols-2 gap-4 sm:gap-6">
+                        <div className="grid grid-cols-2 gap-4">
                             <Button
-                                className="h-20 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-lg font-bold sm:text-xl"
+                                className="h-20 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-lg font-bold"
                                 onClick={() => submitAttendance("yes")}
                                 loading={loading}
                             >
@@ -314,7 +289,7 @@ const Dinner = () => {
                             </Button>
 
                             <Button
-                                className="h-20 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white text-lg font-bold sm:text-xl"
+                                className="h-20 rounded-xl bg-gradient-to-r from-rose-500 to-orange-500 text-white text-lg font-bold"
                                 onClick={() => submitAttendance("no")}
                                 loading={loading}
                             >
@@ -326,7 +301,6 @@ const Dinner = () => {
             </div>
         );
     };
-
 
     const selectedDate = showNextDay ? nextDate : targetDate;
 
@@ -341,42 +315,25 @@ const Dinner = () => {
                     {user && (
                         <motion.div
                             layout
-                            className="flex flex-col gap-4 p-4
-            bg-gradient-to-r from-indigo-50 to-purple-50
-            rounded-2xl shadow-lg border border-indigo-200
-            hover:shadow-xl transition-shadow duration-300"
+                            className="flex flex-col gap-4 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl shadow-lg border border-indigo-200"
                         >
-                            {/* Name */}
                             <div className="flex items-center gap-3">
-                                <div className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14
-                bg-indigo-100 text-indigo-700 rounded-full shadow-inner">
-                                    <UserOutlined className="text-xl sm:text-2xl" />
+                                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                                    <UserOutlined className="text-xl" />
                                 </div>
-
-                                <div className="flex flex-col">
-                                    <span className="text-sm sm:text-base font-semibold text-gray-800 truncate">
-                                        {user.name}
-                                    </span>
-                                    <span className="text-xs sm:text-sm text-gray-500">
-                                        Full Name
-                                    </span>
+                                <div>
+                                    <p className="font-semibold">{user.name}</p>
+                                    <p className="text-xs text-gray-500">Full Name</p>
                                 </div>
                             </div>
 
-                            {/* Email */}
                             <div className="flex items-center gap-3">
-                                <div className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14
-                bg-indigo-100 text-indigo-700 rounded-full shadow-inner">
-                                    <MailOutlined className="text-lg sm:text-xl" />
+                                <div className="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center">
+                                    <MailOutlined />
                                 </div>
-
-                                <div className="flex flex-col">
-                                    <span className="text-sm sm:text-base text-gray-700 truncate">
-                                        {user.email}
-                                    </span>
-                                    <span className="text-xs sm:text-sm text-gray-500">
-                                        IGIDR Email
-                                    </span>
+                                <div>
+                                    <p className="text-sm">{user.email}</p>
+                                    <p className="text-xs text-gray-500">IGIDR Email</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -397,14 +354,8 @@ const Dinner = () => {
                         type="primary"
                         block
                         size="large"
-                        icon={
-                            showNextDay ? (
-                                <ArrowLeftOutlined />
-                            ) : (
-                                <ArrowRightOutlined />
-                            )
-                        }
-                        onClick={() => setShowNextDay((p) => !p)}
+                        icon={showNextDay ? <ArrowLeftOutlined /> : <ArrowRightOutlined />}
+                        onClick={() => setShowNextDay(p => !p)}
                     >
                         {showNextDay ? "Previous Day" : "Next Day"}
                     </Button>

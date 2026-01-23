@@ -5,7 +5,6 @@ import "@ant-design/v5-patch-for-react-19";
 import App from "./App";
 import Body from "./components/Body";
 import Home from "./components/Home/Home";
-import Profile from "./components/Profile/Profile";
 import Lunch from "./components/Lunch/Lunch";
 import Dinner from "./components/Dinner/Dinner";
 import OtpLogin from "./components/OtpLogin/OtpLogin";
@@ -31,7 +30,6 @@ const router = createBrowserRouter([
                         element: <Body />,         // layout
                         children: [
                             { path: "home", element: <Home /> },
-                            // { path: "profile", element: <Profile /> },
                             { path: "lunch", element: <Lunch /> },
                             { path: "dinner", element: <Dinner /> },
                         ],

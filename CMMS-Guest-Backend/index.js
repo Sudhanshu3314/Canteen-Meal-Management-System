@@ -6,6 +6,7 @@ require("./models/dBase"); // MongoDB connection
 
 const authRoutes = require("./routes/auth");
 const lunchRoutes = require("./routes/lunch");
+const dinnerRoutes = require("./routes/dinner");
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -23,6 +24,7 @@ app.use((req, res, next) => {
 // Routes
 app.use("/auth", authRoutes);
 app.use("/lunch", lunchRoutes);
+app.use("/dinner", dinnerRoutes);
 
 app.get("/", (req, res) => res.send("Server is working!"));
 

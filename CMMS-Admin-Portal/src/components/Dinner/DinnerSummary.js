@@ -53,9 +53,9 @@ const DinnerSummary = () => {
                         fontSize: "26px",
                         fontWeight: 700,
                         color:
-                            text === "Yes"
+                            text === "Members having Dinner"
                                 ? "green"
-                                : text === "No"
+                                : text === "NOT having Dinner"
                                     ? "red"
                                     : "#001529",
                     }}
@@ -85,9 +85,9 @@ const DinnerSummary = () => {
 
     const tableData = summary
         ? [
-            { key: "1", status: "Yes", count: summary.Yes },
-            { key: "2", status: "No", count: summary.No },
-            { key: "3", status: "Total", count: summary.Total },
+            { key: "1", status: "Total Active Members", count: summary.Total },
+            { key: "2", status: "NOT having Dinner", count: summary.No },
+            { key: "3", status: "Members having Dinner", count: summary.Yes },
         ]
         : [];
 

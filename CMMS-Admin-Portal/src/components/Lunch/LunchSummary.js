@@ -54,9 +54,9 @@ const LunchSummary = () => {
                         fontSize: "26px",
                         fontWeight: 700,
                         color:
-                            text === "Yes"
-                                ? "green" // bright blue for Yes
-                                : text === "No"
+                            text === "Members having Lunch"
+                                ? "green" // bright GREEN for Yes
+                                : text === "NOT having Lunch"
                                     ? "red" // red for No
                                     : "#002766", // deep blue fallback
                     }}
@@ -86,9 +86,9 @@ const LunchSummary = () => {
 
     const tableData = summary
         ? [
-            { key: "1", status: "Yes", count: summary.Yes },
-            { key: "2", status: "No", count: summary.No },
-            { key: "3", status: "Total", count: summary.Total },
+            { key: "1", status: "Total Active Members", count: summary.Total },
+            { key: "2", status: "NOT having Lunch", count: summary.No },
+            { key: "3", status: "Members having Lunch", count: summary.Yes },
         ]
         : [];
 
