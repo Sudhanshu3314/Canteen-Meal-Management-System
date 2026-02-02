@@ -84,14 +84,8 @@ router.post("/", authMiddleware, async (req, res) => {
  * ADMIN: Dinner report (all users)
  * ============================
  */
-router.get("/report", authMiddleware, async (req, res) => {
-    if (req.user.role !== "admin") {
-        return res.status(403).json({
-            success: false,
-            message: "Admin access only",
-        });
-    }
-
+// Public: get all dinner reports (no auth)
+router.get("/report", async (req, res) => {
     const { date } = req.query;
     const filter = date ? { date } : {};
 
@@ -106,5 +100,6 @@ router.get("/report", authMiddleware, async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 });
+
 
 module.exports = router;
