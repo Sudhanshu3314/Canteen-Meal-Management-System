@@ -21,7 +21,7 @@ const MealReport = () => {
     const [error, setError] = useState("");
     const [isRefreshing, setIsRefreshing] = useState(false);
 
-    const BASE_URL = "https://cmmg-backends.vercel.app";
+    const BASE_URL = process.env.REACT_APP_GUEST_B;
     const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
     const today = new Date().toISOString().split("T")[0];
     const todayFormatted = new Date().toLocaleDateString('en-US', {
