@@ -244,7 +244,7 @@ const OtpLogin = () => {
                                     className="text-center mt-6"
                                 >
                                     <Link
-                                        to={"https://igidr-cmms.netlify.app/"}
+                                        to={process.env.SINGLE_USER_FRONTEND}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="
